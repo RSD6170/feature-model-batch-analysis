@@ -45,7 +45,7 @@ public class NumberOfValidConfigurations implements IFMAnalysis {
     public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
 		createTemporaryDimacs(formula);
 		BinaryResult result = null;
-		result = executeSolver(TEMPORARY_DIMACS_PATH, 20);
+		result = executeSolver(TEMPORARY_DIMACS_PATH, 30);
 		if (result.status == Status.TIMEOUT) {
 			return "-1";
 		}

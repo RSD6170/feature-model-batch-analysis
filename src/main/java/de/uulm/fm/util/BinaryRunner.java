@@ -55,7 +55,7 @@ public class BinaryRunner {
 			in.close();
 			return new BinaryRunner().new BinaryResult(val, Status.SOLVED);
 		} catch (final Exception e) {
-			return null;
+			return new BinaryRunner().new BinaryResult("", Status.UNEXPECTED);
 		}
 	}
 	
