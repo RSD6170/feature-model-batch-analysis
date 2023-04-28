@@ -69,21 +69,21 @@ public class FeatureModelStructureAnalysis {
 		analysisHandler.registerAnalysis(new TreeDepth());
 		analysisHandler.registerAnalysis(new AverageNumberOfChilden());
 		
-		// // analysisHandler.registerAnalysis(new NumberOfClauses());
-		// analysisHandler.registerAnalysis(new NumberOfLiterals());
-		// // analysisHandler.registerAnalysis(new ClauseDensity());
+		analysisHandler.registerAnalysis(new NumberOfClauses());
+		analysisHandler.registerAnalysis(new NumberOfLiterals());
+		analysisHandler.registerAnalysis(new ClauseDensity());
 		
-		// analysisHandler.registerAnalysis(new RatioOfOptionalFeatures());
-		// analysisHandler.registerAnalysis(new ConnectivityDensity());
+		analysisHandler.registerAnalysis(new RatioOfOptionalFeatures());
+		analysisHandler.registerAnalysis(new ConnectivityDensity());
 		
-		// analysisHandler.registerAnalysis(new VoidModel());
-		// analysisHandler.registerAnalysis(new NumberOfCoreFeatures());
-		// analysisHandler.registerAnalysis(new NumberOfDeadFeatures());
+		analysisHandler.registerAnalysis(new VoidModel());
+		analysisHandler.registerAnalysis(new NumberOfCoreFeatures());
+		analysisHandler.registerAnalysis(new NumberOfDeadFeatures());
 
-		// analysisHandler.registerAnalysis(new NumberOfValidConfigurations());
+		analysisHandler.registerAnalysis(new NumberOfValidConfigurations());
 
-		// analysisHandler.registerAnalysis(new SimpleCyclomaticComplexity());
-		// analysisHandler.registerAnalysis(new IndependentCyclomaticComplexity());
+		analysisHandler.registerAnalysis(new SimpleCyclomaticComplexity());
+		analysisHandler.registerAnalysis(new IndependentCyclomaticComplexity());
 	}
 
 }
