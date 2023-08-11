@@ -1,6 +1,6 @@
 package org.collection.fm;
 
-import java.io.File;
+import java.io.*;
 import java.util.List;
 
 import org.collection.fm.analyses.*;
@@ -34,20 +34,12 @@ public class FeatureModelStructureAnalysis {
 	}
 
 	private void handleFiles(List<File> files, String inputPath, String outputfile) {
-		String csvContent = analysisHandler.getCsvHeader();
-		FileUtils.writeContentToFile(outputfile, csvContent);
-		csvContent = "";
-
-		int lastUpdate = 0;
-		for (File file : files) {
-			csvContent += handleFile(file, inputPath);
-			if (++lastUpdate >= UPDATE_CSV_INTERVALL) {
-				FileUtils.appendContentToFile(outputfile, csvContent);
-				csvContent = "";
-				lastUpdate = 0;
-			}
-		}
-		FileUtils.appendContentToFile(outputfile, csvContent); // Add last partial batch
+		try(PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(outputfile)))) {
+			writer.println(analysisHandler.getCsvHeader());
+			files.stream().map(f -> handleFile(f, inputPath)).forEachOrdered(writer::print);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 	}
 
 	private String handleFile(File file, String inputPath) {
@@ -84,6 +76,7 @@ public class FeatureModelStructureAnalysis {
 
 		analysisHandler.registerAnalysis(new SimpleCyclomaticComplexity());
 		analysisHandler.registerAnalysis(new IndependentCyclomaticComplexity());
+		analysisHandler.registerAnalysis(new SATZilla());
 	}
 
 }

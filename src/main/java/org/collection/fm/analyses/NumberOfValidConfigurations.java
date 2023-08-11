@@ -1,10 +1,15 @@
 package org.collection.fm.analyses;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.collection.fm.util.BinaryRunner;
+import org.collection.fm.util.FMUtils;
 import org.collection.fm.util.FileUtils;
 import org.collection.fm.util.BinaryRunner.*;
 import org.prop4j.Node;
@@ -42,23 +47,39 @@ public class NumberOfValidConfigurations implements IFMAnalysis {
 
     @Override
     public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
-		createTemporaryDimacs(formula);
-		BinaryResult result = null;
-		result = executeSolver(TEMPORARY_DIMACS_PATH, 30);
-		if (result.status == Status.TIMEOUT) {
-			return "-1";
-		}
-		if (result.status == Status.SOLVED) {
-			return parseResult(result.stdout);
+		Path dir = null;
+		try {
+			dir = createTemporaryDimacs(formula);
+			BinaryResult result = null;
+			result = executeSolver(TEMPORARY_DIMACS_PATH, 30);
+			cleanUpTemp(dir);
+			if (result.status == Status.TIMEOUT) {
+				return "-1";
+			}
+			if (result.status == Status.SOLVED) {
+				return parseResult(result.stdout);
+			}
+		} catch (IOException e) {
+			return "-";
 		}
 		return "-2";
     }
 	
-	public static void createTemporaryDimacs(FeatureModelFormula formula) {
+	public static Path createTemporaryDimacs(FeatureModelFormula formula) throws IOException {
+		Path tempDir = Files.createTempDirectory("SATfeatPy");
+		String cnfPath = tempDir.resolve("fm.cnf").toString();
 		final DimacsWriter dWriter = new DimacsWriter(formula.getCNF());
 		final String dimacsContent = dWriter.write();
-		FileUtils.writeContentToFile(TEMPORARY_DIMACS_PATH, dimacsContent);
+		FileUtils.writeContentToFile(cnfPath, dimacsContent);
+
+		return tempDir;
     }
+
+	public static void cleanUpTemp(Path path){
+		File[] files = path.toFile().listFiles();
+		if (files != null) Arrays.stream(files).forEach(File::delete);
+		path.toFile().deleteOnExit();
+	}
     
     public BinaryResult executeSolver(String dimacsPath, long timeout) {
 		String command = buildCommand(dimacsPath);

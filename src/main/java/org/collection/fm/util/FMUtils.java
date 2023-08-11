@@ -43,10 +43,14 @@ public class FMUtils {
 	}
 
 	public static void saveCNF(FeatureModelFormula formula, String path) {
+		String dimacsContent = getDimacsContent(formula);
+		FileUtils.writeContentToFile(path.replaceFirst("[.][^.]+$", "") + ".dimacs", dimacsContent);
+	}
+
+	public static String getDimacsContent(FeatureModelFormula formula) {
 		// clear if one exists
 		final DimacsWriter dWriter = new DimacsWriter(formula.getCNF());
-		final String dimacsContent = dWriter.write();
-		FileUtils.writeContentToFile(path.replaceFirst("[.][^.]+$", "") + ".dimacs", dimacsContent);
+		return dWriter.write();
 	}
 	
 
