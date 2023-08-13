@@ -20,7 +20,7 @@ public class NumberOfConstraints implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
         return Integer.toString(featureModel.getConstraintCount());
     }
 

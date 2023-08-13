@@ -21,7 +21,7 @@ public class AverageConstraintSize implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
         double sizeCount = 0;
 		int numberOfConstraints = featureModel.getConstraintCount();
 		if (numberOfConstraints == 0) {

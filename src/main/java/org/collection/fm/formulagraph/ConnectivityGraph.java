@@ -100,11 +100,12 @@ public class ConnectivityGraph {
         // key: child, value: parent
         HashMap<String, String> parentMapping = new HashMap<>();
         parentMapping.put(start, null);
-        while (!stack.isEmpty()) {
+        while (!stack.isEmpty() && !Thread.currentThread().isInterrupted()) {
             String current = stack.pop();
             Vertex currentV = getVertex(current);
             currentV.setVisited(true);
             for (String dest : currentV.getAdjacencyList()) {
+                if (Thread.currentThread().isInterrupted()) return -1;
                 parentMapping.put(dest, current);
                 Vertex destV = getVertex(dest);
                 if (stack.contains(dest) && !destV.isVisited()) { // cycle found
@@ -120,6 +121,7 @@ public class ConnectivityGraph {
                     // check for not independent cycles before inserting
                     boolean independent = true;
                     for(Vector<String> elem :  cycleLog) {
+                        if (Thread.currentThread().isInterrupted()) return -1;
                         if (elem.size() >= pathLog.size()) {
                             if (elem.containsAll(pathLog)) {
                                 independent = false;

@@ -3,6 +3,7 @@ package org.collection.fm.analyses;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 
 import org.collection.fm.analyses.IFMAnalysis.Format;
 import org.collection.fm.util.CnfTranslator;
@@ -43,12 +44,27 @@ public class AnalysisHandler {
     }
 
     public String evaluateFeatureModel(IFeatureModel model, int timeout) {
-        String csvRow = "";
-        FeatureModelFormula formula = new FeatureModelFormula(model);
-        for (IFMAnalysis analysis: analyses) {
-            csvRow += analysis.getResult(model, formula) + ";";
+        try(ExecutorService executorService = Executors.newSingleThreadExecutor()) {
+            StringBuilder csvRow = new StringBuilder();
+            FeatureModelFormula formula = new FeatureModelFormula(model);
+            for (IFMAnalysis analysis : analyses) {
+                if (analysis instanceof SATZilla){
+                    csvRow.append(analysis.getResult(model, formula, timeout)).append(";");
+                } else {
+                    Future<String> result = executorService.submit(() -> analysis.getResult(model, formula, timeout));
+                    try {
+                        csvRow.append(result.get(timeout, TimeUnit.SECONDS)).append(";");
+                    } catch (ExecutionException e) {
+                        throw new RuntimeException(e);
+                    } catch (InterruptedException | TimeoutException e) {
+                        result.cancel(true);
+                        csvRow.append("null" + ";");
+                        System.out.println(analysis.getLabel() + " ran out of time!");
+                    }
+                }
+            }
+            return csvRow.substring(0, csvRow.length() - 1) + "\n";
         }
-        return csvRow.substring(0, csvRow.length() - 1) + "\n";
     }
 
     public String evaluateCNF(Node node, int timeout) {

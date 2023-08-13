@@ -25,10 +25,13 @@ public interface IFMAnalysis {
 
     /**
      * Computes result of the analyis for a given feature model
+     *
      * @param featureModel
+     * @param formula
+     * @param timeout      timeout
      * @return String to be saved in the csv for that model
      */
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula);
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout);
 
 
     /**

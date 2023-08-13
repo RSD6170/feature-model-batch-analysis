@@ -21,7 +21,7 @@ public class IndependentCyclomaticComplexity implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
         ConnectivityGraph graph = new ConnectivityGraph(formula);
         return Integer.toString(graph.getNumberOfIndependentCycles());
     }

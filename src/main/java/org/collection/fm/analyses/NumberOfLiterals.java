@@ -22,7 +22,7 @@ public class NumberOfLiterals implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
         Node cnf = formula.getCNFNode();
         int numberOfLiterals = 0;
         for (Node clause : cnf.getChildren()) {

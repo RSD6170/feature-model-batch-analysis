@@ -21,7 +21,7 @@ public class NumberOfLeafFeatures implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
         return Integer.toString(getNumberOfLeafChildren(featureModel.getStructure().getRoot()));
     }
 

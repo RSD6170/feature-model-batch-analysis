@@ -14,6 +14,7 @@ setup(
         'python-louvain',
         'powerlaw',
         'scikit-learn',
-        'scipy'
+        'scipy',
+        'func_timeout'
     ]
 )

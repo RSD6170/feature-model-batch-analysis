@@ -20,7 +20,7 @@ public class CtcDensity implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
         return Double.toString( (double) featureModel.getConstraintCount() / featureModel.getNumberOfFeatures());
     }
 

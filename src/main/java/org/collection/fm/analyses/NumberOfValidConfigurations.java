@@ -9,7 +9,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.collection.fm.util.BinaryRunner;
-import org.collection.fm.util.FMUtils;
 import org.collection.fm.util.FileUtils;
 import org.collection.fm.util.BinaryRunner.*;
 import org.prop4j.Node;
@@ -46,7 +45,7 @@ public class NumberOfValidConfigurations implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
 		Path dir = null;
 		try {
 			dir = createTemporaryDimacs(formula);

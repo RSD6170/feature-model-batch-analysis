@@ -21,7 +21,7 @@ public class AverageNumberOfChilden implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
 		int childrenCount = 0;
 		int numberOfNonLeafFeatures = 0;
 		for (IFeature feature : featureModel.getFeatures()) {

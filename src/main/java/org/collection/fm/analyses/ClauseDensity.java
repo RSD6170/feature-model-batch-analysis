@@ -20,7 +20,7 @@ public class ClauseDensity implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
         Node cnf = formula.getCNFNode();
 		return Double.toString((double) cnf.getChildren().length / cnf.getVariables().size());
     }

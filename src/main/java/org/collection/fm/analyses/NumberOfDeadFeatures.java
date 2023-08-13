@@ -21,7 +21,7 @@ public class NumberOfDeadFeatures implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
         return String.valueOf(FMUtils.getCoreFeatures(formula).size());
     }
 

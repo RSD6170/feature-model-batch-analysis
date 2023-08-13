@@ -21,7 +21,7 @@ public class NumberOfClauses implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
         Node cnf = formula.getCNFNode();
         return Integer.toString(cnf.getChildren().length);
     }

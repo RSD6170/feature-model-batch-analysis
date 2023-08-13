@@ -26,7 +26,7 @@ public class FeaturesInConstraintsDensity implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
 		int numberOfFeatures = featureModel.getNumberOfFeatures();
 		
 		List<IConstraint> constraints = featureModel.getConstraints();

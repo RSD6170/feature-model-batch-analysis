@@ -21,7 +21,7 @@ public class ConnectivityDensity implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
         ConnectivityGraph graph = new ConnectivityGraph(formula);
         int numberOfEdges = graph.getNumberOfEdges();
         return Integer.toString(numberOfEdges);
