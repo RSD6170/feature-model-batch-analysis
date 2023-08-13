@@ -7,9 +7,10 @@ from sat_instance.sat_instance import SATInstance
 sat_inst = SATInstance(file_name, preprocess=True, verbose=True, preprocess_tmp=False)
 timeout = remaining_time
 if sat_inst.solved:
-    retValue = {}
+    retValue = {"presolved": True}
 else:
     retValue = sat_inst.features_dict
+    sat_inst.features_dict["presolved"]=False
     t1 = time.time()
     try:
         func_timeout(timeout, sat_inst.gen_basic_features)
