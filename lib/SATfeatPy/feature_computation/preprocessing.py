@@ -1,18 +1,15 @@
 import os
+import subprocess
 
+def satelite_preprocess(cnf_path="cnf_examples/basic.cnf", timeout_satelite=90):
+    cnf_path = os.path.join(os.getcwd(), cnf_path)
+    temp_fn = cnf_path[0:-4] + "_preprocessed.cnf"
+    satelite_path = os.path.join(os.getcwd(), "lib/SATfeatPy/SatELite/SatELite_v1.0_linux")
+    try :
+        satelite_command = [ satelite_path, cnf_path, temp_fn]
+        p = subprocess.run(satelite_command, timeout=timeout_satelite)
+    except subprocess.TimeoutExpired:
+        print("Satelite timed out after {} seconds!".format(timeout_satelite))
+        return False, ""
+    return True, temp_fn
 
-def satelite_preprocess(cnf_path="cnf_examples/basic.cnf"):
-    # pre process using SatELite binary files
-    preprocessed_path = cnf_path[0:-4] + "_preprocessed.cnf"
-    satelite_command = "lib/SATfeatPy/SatELite/SatELite_v1.0_linux " + cnf_path + " " + preprocessed_path
-    os.system(satelite_command)
-    return preprocessed_path
-
-
-def satelite_preprocess_tmp(cnf_path):
-
-    # make a temporary file
-    temp_fn = os.popen("mktemp /tmp/prepro-XXXX").read().strip("\n")
-    satelite_command = "lib/SATfeatPy/SatELite/SatELite_v1.0_linux " + cnf_path + " " + temp_fn
-    os.system(satelite_command)
-    return temp_fn

@@ -12,7 +12,7 @@ class SATInstance:
 
     """
 
-    def __init__(self, input_cnf, preprocess=True, verbose=False, preprocess_tmp=True):
+    def __init__(self, input_cnf, preprocess=True, verbose=False, timeout_satelite=30):
         self.verbose = verbose
         self.preprocess = preprocess
         self.path_to_cnf = input_cnf
@@ -23,12 +23,12 @@ class SATInstance:
         if self.preprocess:
             if self.verbose:
                 print("Preprocessing with SatELite")
-
-            if preprocess_tmp:
-                preprocessed_path = preprocessing.satelite_preprocess_tmp(self.path_to_cnf)
+            finished, preprocessed_path = preprocessing.satelite_preprocess(self.path_to_cnf, timeout_satelite)
+            if finished:
+                self.path_to_cnf = preprocessed_path
             else:
-                preprocessed_path = preprocessing.satelite_preprocess(self.path_to_cnf)
-            self.path_to_cnf = preprocessed_path
+                self.preprocess=False
+
 
         # parse the cnf file
         if self.verbose:
@@ -130,27 +130,22 @@ class SATInstance:
         if self.verbose:
             print("Generating features from Ansotegui")
 
-        alpha = graph_features_ansotegui.estimate_power_law_alpha(self.clauses, self.num_active_clauses,
-                                                                  self.num_active_vars)
+        if self.preprocess:
+            self.features_dict["variable_alpha"] = graph_features_ansotegui.estimate_power_law_alpha(self.clauses, self.num_active_clauses, self.num_active_vars)
 
-        vig = graph_features_ansotegui.create_vig(self.clauses, self.num_active_clauses, self.num_active_vars)
-        cvig = graph_features_ansotegui.create_cvig(self.clauses, self.num_active_clauses, self.num_active_vars)
+            vig = graph_features_ansotegui.create_vig(self.clauses, self.num_active_clauses, self.num_active_vars)
+            cvig = graph_features_ansotegui.create_cvig(self.clauses, self.num_active_clauses, self.num_active_vars)
 
-        modularity = graph_features_ansotegui.compute_modularity_q(vig)
+            self.features_dict["vig_modularty"] = graph_features_ansotegui.compute_modularity_q(vig)
 
-        N_vig = graph_features_ansotegui.burning_by_node_degree(vig, self.num_active_vars)
-        N_cvig = graph_features_ansotegui.burning_by_node_degree(cvig, self.num_active_vars + self.num_active_clauses)
 
-        d_poly, d_exp = graph_features_ansotegui.linear_regression_fit(N_vig)
-        db_poly, db_exp = graph_features_ansotegui.linear_regression_fit(N_cvig)
+            N_vig = graph_features_ansotegui.burning_by_node_degree(vig, self.num_active_vars)
+            N_cvig = graph_features_ansotegui.burning_by_node_degree(cvig, self.num_active_vars + self.num_active_clauses)
 
-        ansotegui_features = {"vig_modularty": modularity,
-                              "vig_d_poly": d_poly,
-                              "cvig_db_poly": db_poly,
-                              "variable_alpha": alpha
-                              }
-
-        self.features_dict.update(ansotegui_features)
+            d_poly, d_exp = graph_features_ansotegui.linear_regression_fit(N_vig)
+            self.features_dict["vig_d_poly"]=d_poly
+            db_poly, db_exp = graph_features_ansotegui.linear_regression_fit(N_cvig)
+            self.features_dict["cvig_db_poly"]=db_poly
 
     def gen_manthey_alfonso_graph_features(self):
         if self.verbose:
@@ -193,8 +188,9 @@ class SATInstance:
         exo_stats = graph_features_manthey_alfonso.get_graph_stats("exo_", nd, w)
         self.features_dict.update(exo_stats)
 
-        rwh = more_graph_features.recursive_weight_heuristic(10, self.clauses, self.num_active_vars)
-        self.features_dict.update(rwh)
+        if self.preprocess:
+            rwh = more_graph_features.recursive_weight_heuristic(10, self.clauses, self.num_active_vars)
+            self.features_dict.update(rwh)
 
     def write_results(self):
         write_to_file.write_features_to_json(self.features_dict)

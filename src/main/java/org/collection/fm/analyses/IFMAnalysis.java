@@ -7,6 +7,7 @@ import de.ovgu.featureide.fm.core.base.IFeatureModel;
 
 public interface IFMAnalysis {
 
+
     enum Format {
         FEATURE_MODEL, CNF
     }
@@ -47,5 +48,9 @@ public interface IFMAnalysis {
      * @return
      */
     public boolean supportsFormat(Format format);
+
+    public default int getMaxRuntime() {
+        return 30;
+    }
 
 }

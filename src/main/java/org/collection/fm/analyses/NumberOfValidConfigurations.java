@@ -50,23 +50,23 @@ public class NumberOfValidConfigurations implements IFMAnalysis {
 		try {
 			dir = createTemporaryDimacs(formula);
 			BinaryResult result = null;
-			result = executeSolver(TEMPORARY_DIMACS_PATH, 30);
+			result = executeSolver(dir.resolve(TEMPORARY_DIMACS_PATH).toString(), timeout);
 			cleanUpTemp(dir);
 			if (result.status == Status.TIMEOUT) {
-				return "-1";
+				return "?";
 			}
 			if (result.status == Status.SOLVED) {
 				return parseResult(result.stdout);
 			}
 		} catch (IOException e) {
-			return "-";
+			return "?";
 		}
-		return "-2";
+		return "?";
     }
 	
 	public static Path createTemporaryDimacs(FeatureModelFormula formula) throws IOException {
 		Path tempDir = Files.createTempDirectory("SATfeatPy");
-		String cnfPath = tempDir.resolve("fm.cnf").toString();
+		String cnfPath = tempDir.resolve(TEMPORARY_DIMACS_PATH).toString();
 		final DimacsWriter dWriter = new DimacsWriter(formula.getCNF());
 		final String dimacsContent = dWriter.write();
 		FileUtils.writeContentToFile(cnfPath, dimacsContent);
@@ -100,7 +100,7 @@ public class NumberOfValidConfigurations implements IFMAnalysis {
 		if (matcher.find()) {
 			result = matcher.group();
 		} else {
-			return "-2";
+			return "?";
 		}
 		final String[] split = result.split(" ");
 		return split[split.length - 1];

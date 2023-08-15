@@ -1,6 +1,10 @@
 package org.collection.fm;
 
 import java.io.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.collection.fm.analyses.*;
@@ -10,13 +14,15 @@ import org.collection.fm.util.FileUtils;
 public class FeatureModelStructureAnalysis {
 
 	AnalysisHandler analysisHandler;
-	int timeout;
+	static int timeout;
 
-	private static final int UPDATE_CSV_INTERVALL = 5;
+	private static List<Double> runtime;
+
 
 	public FeatureModelStructureAnalysis() {
 		initializeAnalyses();
 		timeout = 30;
+		runtime = new ArrayList<>();
 	}
 
 	public static void main(String[] args) {
@@ -31,6 +37,7 @@ public class FeatureModelStructureAnalysis {
 		List<File> files = FileUtils.getFileList(args[0]);
 
 		analysis.handleFiles(files, args[0], args.length == 1 ? "result.csv" : args[1]);
+		System.out.println(runtime);
 	}
 
 	private void handleFiles(List<File> files, String inputPath, String outputfile) {
@@ -44,7 +51,11 @@ public class FeatureModelStructureAnalysis {
 
 	private String handleFile(File file, String inputPath) {
 		System.out.println("Handling " + file.getPath());
-		return analysisHandler.evaluateFmFile(file, timeout, inputPath);
+		LocalDateTime before = LocalDateTime.now();
+		String retValue = analysisHandler.evaluateFmFile(file, timeout, inputPath);
+		LocalDateTime after = LocalDateTime.now();
+		runtime.add(Duration.between(before, after).toMillis() / 1000d);
+		return retValue;
 	}
 
 	private void initializeAnalyses() {

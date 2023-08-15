@@ -32,11 +32,11 @@ public class AnalysisHandler {
         if (featureModel == null) {
             return file.getPath() + getFailRow();
         }
-        return file.getPath() + ";" + evaluateFeatureModel(FMUtils.readFeatureModel(file.getPath()), timeout);
+        return file.getPath() + "," + evaluateFeatureModel(FMUtils.readFeatureModel(file.getPath()), timeout);
     }
 
     public String evaluateDimacsFile(File file, int timeout, String inputPath) {
-        return file.getPath() + ";" + evaluateCNF(CnfTranslator.readDimacs(file.getPath()), timeout);
+        return file.getPath() + "," + evaluateCNF(CnfTranslator.readDimacs(file.getPath()), timeout);
     }
 
     private String getCleanName(File file, String inputPath) {
@@ -48,17 +48,17 @@ public class AnalysisHandler {
             StringBuilder csvRow = new StringBuilder();
             FeatureModelFormula formula = new FeatureModelFormula(model);
             for (IFMAnalysis analysis : analyses) {
-                if (analysis instanceof SATZilla){
-                    csvRow.append(analysis.getResult(model, formula, timeout)).append(";");
+                if (analysis instanceof SATZilla || analysis instanceof NumberOfValidConfigurations){
+                    csvRow.append(analysis.getResult(model, formula, analysis.getMaxRuntime())).append(",");
                 } else {
                     Future<String> result = executorService.submit(() -> analysis.getResult(model, formula, timeout));
                     try {
-                        csvRow.append(result.get(timeout, TimeUnit.SECONDS)).append(";");
+                        csvRow.append(result.get(analysis.getMaxRuntime(), TimeUnit.SECONDS)).append(",");
                     } catch (ExecutionException e) {
                         throw new RuntimeException(e);
                     } catch (InterruptedException | TimeoutException e) {
                         result.cancel(true);
-                        csvRow.append("null" + ";");
+                        csvRow.append("?" + ",");
                         System.out.println(analysis.getLabel() + " ran out of time!");
                     }
                 }
@@ -71,25 +71,25 @@ public class AnalysisHandler {
         String csvRow = "";
         for (IFMAnalysis analysis: analyses) {
             if (analysis.supportsFormat(Format.CNF)) {
-                csvRow += analysis.getResult(node) + ";";
+                csvRow += analysis.getResult(node) + ",";
             }
         }
         return csvRow.substring(0, csvRow.length() - 1) + "\n";
     }
 
     public String getCsvHeader() {
-        String headerRow = "model;";
+        String headerRow = "model,";
         for (IFMAnalysis analysis : analyses) {
-            headerRow += analysis.getLabel() + ";";
+            headerRow += analysis.getLabel() + ",";
         }
 
-        return headerRow.substring(0, headerRow.length() - 1) + "\n";
+        return headerRow.substring(0, headerRow.length() - 1);
     }
 
     public String getFailRow() {
         String failRow = "";
         for (int i = 0; i < analyses.size() - 2; i++) {
-            failRow = failRow + ";";
+            failRow = failRow + ",";
         }
         failRow = failRow + "\n";
         return failRow;
