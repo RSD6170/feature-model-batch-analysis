@@ -4,7 +4,6 @@ import java.io.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.collection.fm.analyses.*;
@@ -83,7 +82,7 @@ public class FeatureModelStructureAnalysis {
 		analysisHandler.registerAnalysis(new NumberOfCoreFeatures());
 		analysisHandler.registerAnalysis(new NumberOfDeadFeatures());
 
-		analysisHandler.registerAnalysis(new NumberOfValidConfigurations());
+		analysisHandler.registerAnalysis(new NumberOfValidConfigurationsLog());
 
 		analysisHandler.registerAnalysis(new SimpleCyclomaticComplexity());
 		analysisHandler.registerAnalysis(new IndependentCyclomaticComplexity());

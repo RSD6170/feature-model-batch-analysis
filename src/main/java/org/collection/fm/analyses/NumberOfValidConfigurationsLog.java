@@ -20,10 +20,10 @@ import de.ovgu.featureide.fm.core.io.dimacs.DimacsWriter;
 /**
  * 
  */
-public class NumberOfValidConfigurations implements IFMAnalysis {
+public class NumberOfValidConfigurationsLog implements IFMAnalysis {
 
 
-    private static final String LABEL = "NumberOfValidConfigurations";
+    private static final String LABEL = "NumberOfValidConfigurationsLog";
 
 
     private static final String TEMPORARY_DIMACS_PATH = "temp.dimacs";
@@ -56,7 +56,7 @@ public class NumberOfValidConfigurations implements IFMAnalysis {
 				return "?";
 			}
 			if (result.status == Status.SOLVED) {
-				return parseResult(result.stdout);
+				return String.valueOf(parseResult(result.stdout).length());
 			}
 		} catch (IOException e) {
 			return "?";

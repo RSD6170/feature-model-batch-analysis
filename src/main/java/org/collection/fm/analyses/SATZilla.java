@@ -57,8 +57,8 @@ public class SATZilla implements IFMAnalysis{
                 System.out.println("Python finished.");
                 Map<String, ?> stats = (Map<String, ?>) interp.getValue("retValue");
                 Arrays.stream(keys).forEach(s -> stats.putIfAbsent(s, null));
-                return stats.entrySet().stream().sorted(Map.Entry.comparingByKey())
-                        .map(Map.Entry::getValue).map(e -> e == null ? "?" : e)
+                return stats.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue)
+                        .map(e -> (e == null) ? "?" : e).map(e -> (e instanceof Double && !(Double.isFinite((Double) e)) ? "?" : e))
                         .map(Object::toString).collect(Collectors.joining(","));
             }
 
