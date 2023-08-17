@@ -48,7 +48,7 @@ public class AnalysisHandler {
             StringBuilder csvRow = new StringBuilder();
             FeatureModelFormula formula = new FeatureModelFormula(model);
             for (IFMAnalysis analysis : analyses) {
-                if (analysis instanceof SATZilla || analysis instanceof NumberOfValidConfigurationsLog){
+                if (analysis instanceof NumberOfValidConfigurationsLog){
                     csvRow.append(analysis.getResult(model, formula, analysis.getMaxRuntime())).append(",");
                 } else {
                     Future<String> result = executorService.submit(() -> analysis.getResult(model, formula, timeout));

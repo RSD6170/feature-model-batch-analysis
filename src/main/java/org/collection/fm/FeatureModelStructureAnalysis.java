@@ -86,7 +86,6 @@ public class FeatureModelStructureAnalysis {
 
 		analysisHandler.registerAnalysis(new SimpleCyclomaticComplexity());
 		analysisHandler.registerAnalysis(new IndependentCyclomaticComplexity());
-		analysisHandler.registerAnalysis(new SATZilla());
 	}
 
 }
