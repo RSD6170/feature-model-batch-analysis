@@ -68,31 +68,31 @@ public class AnalysisHandler {
     }
 
     public String evaluateCNF(Node node, int timeout) {
-        String csvRow = "";
+        StringBuilder csvRow = new StringBuilder();
         for (IFMAnalysis analysis: analyses) {
             if (analysis.supportsFormat(Format.CNF)) {
-                csvRow += analysis.getResult(node) + ",";
+                csvRow.append(analysis.getResult(node)).append(",");
             }
         }
         return csvRow.substring(0, csvRow.length() - 1) + "\n";
     }
 
     public String getCsvHeader() {
-        String headerRow = "model,";
+        StringBuilder headerRow = new StringBuilder("model,");
         for (IFMAnalysis analysis : analyses) {
-            headerRow += analysis.getLabel() + ",";
+            headerRow.append(analysis.getLabel()).append(",");
         }
 
         return headerRow.substring(0, headerRow.length() - 1);
     }
 
     public String getFailRow() {
-        String failRow = "";
+        StringBuilder failRow = new StringBuilder();
         for (int i = 0; i < analyses.size() - 2; i++) {
-            failRow = failRow + ",";
+            failRow.append(",");
         }
-        failRow = failRow + "\n";
-        return failRow;
+        failRow.append("\n");
+        return failRow.toString();
     }
 
 }
