@@ -1,21 +1,17 @@
 package org.collection.fm.analyses;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.collection.fm.util.BinaryRunner;
-import org.collection.fm.util.FileUtils;
 import org.collection.fm.util.BinaryRunner.*;
 import org.prop4j.Node;
 
 import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
-import de.ovgu.featureide.fm.core.io.dimacs.DimacsWriter;
 
 /**
  * 
@@ -26,7 +22,7 @@ public class NumberOfValidConfigurationsLog implements IFMAnalysis {
     private static final String LABEL = "NumberOfValidConfigurationsLog";
 
 
-    private static final String TEMPORARY_DIMACS_PATH = "temp.dimacs";
+
 
 
     private static final String UNSAT_FLAG = "s 0";
@@ -46,47 +42,24 @@ public class NumberOfValidConfigurationsLog implements IFMAnalysis {
 
     @Override
     public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
-		Path dir = null;
-		try {
-			dir = createTemporaryDimacs(formula);
-			BinaryResult result = null;
-			result = executeSolver(dir.resolve(TEMPORARY_DIMACS_PATH).toString(), timeout);
-			cleanUpTemp(dir);
-			if (result.status == Status.TIMEOUT) {
-				return "?";
-			}
-			if (result.status == Status.SOLVED) {
-				return String.valueOf(parseResult(result.stdout).length());
-			}
-		} catch (IOException e) {
+		BinaryResult result = executeSolver(timeout, formula);
+		if (result.status == Status.TIMEOUT) {
 			return "?";
+		}
+		if (result.status == Status.SOLVED) {
+			return String.valueOf(parseResult(result.stdout).length());
 		}
 		return "?";
     }
 	
-	public static Path createTemporaryDimacs(FeatureModelFormula formula) throws IOException {
-		Path tempDir = Files.createTempDirectory("SATfeatPy");
-		String cnfPath = tempDir.resolve(TEMPORARY_DIMACS_PATH).toString();
-		final DimacsWriter dWriter = new DimacsWriter(formula.getCNF());
-		final String dimacsContent = dWriter.write();
-		FileUtils.writeContentToFile(cnfPath, dimacsContent);
 
-		return tempDir;
-    }
-
-	public static void cleanUpTemp(Path path){
-		File[] files = path.toFile().listFiles();
-		if (files != null) Arrays.stream(files).forEach(File::delete);
-		path.toFile().deleteOnExit();
+    
+    public BinaryResult executeSolver(long timeout, FeatureModelFormula formula) {
+		return BinaryRunner.runSolverWithDir(this.buildCommand(), timeout, formula);
 	}
     
-    public BinaryResult executeSolver(String dimacsPath, long timeout) {
-		String command = buildCommand(dimacsPath);
-		return BinaryRunner.runBinaryStatic(command, timeout);
-	}
-    
-    private String buildCommand(String dimacsPath) {
-		return BINARY_PATH + " -i " + dimacsPath + " -m counting";
+    private Function<Path, String[]> buildCommand() {
+		return (dimacsPath -> new String[]{BINARY_PATH,"-i",dimacsPath.toString(),"-m", "counting"});
     }
     
 
