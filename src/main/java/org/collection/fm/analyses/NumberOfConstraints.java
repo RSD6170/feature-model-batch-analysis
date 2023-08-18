@@ -7,7 +7,7 @@ import de.ovgu.featureide.fm.core.base.IFeatureModel;
 
 public class NumberOfConstraints implements IFMAnalysis {
 
-    private static final String LABEL = "#Constraints";
+    private static final String LABEL = "Number_Constraints";
 
     @Override
     public String getLabel() {

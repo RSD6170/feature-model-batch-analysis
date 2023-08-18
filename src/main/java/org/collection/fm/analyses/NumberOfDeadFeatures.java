@@ -8,7 +8,7 @@ import de.ovgu.featureide.fm.core.base.IFeatureModel;
 
 public class NumberOfDeadFeatures implements IFMAnalysis {
 
-    private static final String LABEL = "#Dead";
+    private static final String LABEL = "Number_Dead";
 
     @Override
     public String getLabel() {

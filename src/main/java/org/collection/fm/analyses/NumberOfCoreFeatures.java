@@ -8,7 +8,7 @@ import de.ovgu.featureide.fm.core.base.IFeatureModel;
 
 public class NumberOfCoreFeatures implements IFMAnalysis  {
 
-    private static final String LABEL = "#CORE";
+    private static final String LABEL = "Number_CORE";
 
     @Override
     public String getLabel() {
