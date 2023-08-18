@@ -46,11 +46,9 @@ public class BinaryRunner {
 			final Process ps = new ProcessBuilder(commands).redirectErrorStream(true).start();
 			long pid = ps.pid();
 				if(!ps.waitFor(timeout, TimeUnit.SECONDS)) {
-					ps.destroy();
-					final Process killPs = new ProcessBuilder(getKillCommand(pid)).start();
-					killPs.waitFor(10, TimeUnit.SECONDS);
+					killProcesses(ps.toHandle());
 
-				    return new BinaryResult("", Status.TIMEOUT);
+					return new BinaryResult("", Status.TIMEOUT);
 				}
 
 			StringBuilder val = new StringBuilder();
@@ -66,6 +64,11 @@ public class BinaryRunner {
 		}
 	}
 
+	private static void killProcesses(ProcessHandle ps)  {
+        ps.descendants().forEach(BinaryRunner::killProcesses);
+		ps.destroy();
+	}
+
 	public static BinaryResult runSolverWithDir(Function<Path, String[]> commands, long timeout, FeatureModelFormula formula){
 		try {
 			Path dir = createTemporaryDimacs(formula);
@@ -78,7 +81,7 @@ public class BinaryRunner {
 	}
 
 	private static Path createTemporaryDimacs(FeatureModelFormula formula) throws IOException {
-		Path tempDir = Files.createTempDirectory("SATfeatPy");
+		Path tempDir = Files.createTempDirectory("sat");
 		String cnfPath = tempDir.resolve(TEMPORARY_DIMACS_PATH).toString();
 		final DimacsWriter dWriter = new DimacsWriter(formula.getCNF());
 		final String dimacsContent = dWriter.write();
@@ -91,10 +94,5 @@ public class BinaryRunner {
 		File[] files = path.toFile().listFiles();
 		if (files != null) Arrays.stream(files).forEach(File::delete);
 		path.toFile().deleteOnExit();
-	}
-
-	
-	private static String[] getKillCommand(long pid) {
-		return new String[]{"rkill", String.valueOf(pid)};
 	}
 }

@@ -50,6 +50,13 @@
       <artifactId>org.sat4j.core</artifactId>
       <version>2.3.5</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-csv -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-csv</artifactId>
+      <version>1.10.0</version>
+    </dependency>
+
 
   </dependencies>
 

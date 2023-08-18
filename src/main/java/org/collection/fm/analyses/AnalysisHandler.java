@@ -16,7 +16,7 @@ import de.ovgu.featureide.fm.core.base.IFeatureModel;
 
 public class AnalysisHandler {
     
-    private List<IFMAnalysis> analyses;
+    private final List<IFMAnalysis> analyses;
 
     public AnalysisHandler() {
         this.analyses = new ArrayList<>();
