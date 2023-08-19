@@ -65,10 +65,14 @@ public class SatzillaHandler extends FeatureStepHandler{
                     yield new FeatureStep(file, results, Duration.between(before, LocalDateTime.now()).toMillis() / 1000d, FeatureStatus.ok);
                 }
                 case MEMORY_LIMIT_REACHED -> new FeatureStep(file, Collections.nCopies(satzillaType.header.length, "?"), super.runtimeLimit, FeatureStatus.memout);
-                case TIMEOUT -> new FeatureStep(file, Collections.nCopies(satzillaType.header.length, "?"), super.runtimeLimit, FeatureStatus.timeout);
+                case TIMEOUT -> {
+                    System.out.println("Timeout in Satzilla "+ satzillaType);
+                    yield new FeatureStep(file, Collections.nCopies(satzillaType.header.length, "?"), super.runtimeLimit, FeatureStatus.timeout);
+                }
                 case UNEXPECTED -> throw new Exception();
             };
         }catch (Exception e){
+            System.out.println("Error in Satzilla "+ satzillaType);
             return new FeatureStep(file, Collections.nCopies(satzillaType.header.length, "?"), super.runtimeLimit, FeatureStatus.crash);
         }
     }

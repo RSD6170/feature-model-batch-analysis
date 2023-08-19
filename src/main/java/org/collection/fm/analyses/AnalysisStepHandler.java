@@ -42,10 +42,11 @@ public class AnalysisStepHandler {
                 statusWriter.print(file.toString());
                 statusWriter.print("1");
                 statusWriter.printRecord(featureStep.stream().map(FeatureStep::featureStatus));
+
+                resultWriter.flush();
+                timeWriter.flush();
+                statusWriter.flush();
             }
-            resultWriter.flush();
-            timeWriter.flush();
-            statusWriter.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
