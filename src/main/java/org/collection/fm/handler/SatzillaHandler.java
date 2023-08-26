@@ -1,12 +1,12 @@
-package org.collection.fm.analyses;
+package org.collection.fm.handler;
 
 import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
+import org.collection.fm.analyses.IFMAnalysis;
 import org.collection.fm.util.BinaryRunner;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.text.ParseException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;

@@ -1,11 +1,10 @@
-package org.collection.fm.analyses;
+package org.collection.fm.handler;
 
 import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.collection.fm.util.FMUtils;
-import org.collection.fm.util.FileUtils;
 
 import java.io.*;
 import java.util.*;

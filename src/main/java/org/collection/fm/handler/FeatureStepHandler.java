@@ -1,7 +1,9 @@
-package org.collection.fm.analyses;
+package org.collection.fm.handler;
 
 import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
+import org.collection.fm.analyses.IFMAnalysis;
+import org.collection.fm.analyses.NumberOfValidConfigurationsLog;
 
 import java.nio.file.Path;
 import java.time.Duration;
@@ -9,9 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 public class FeatureStepHandler {
 

@@ -1,6 +1,9 @@
 package org.collection.fm;
 
 import org.collection.fm.analyses.*;
+import org.collection.fm.handler.AnalysisStepHandler;
+import org.collection.fm.handler.FeatureStepHandler;
+import org.collection.fm.handler.SatzillaHandler;
 import org.collection.fm.util.FMUtils;
 import org.collection.fm.util.FileUtils;
 

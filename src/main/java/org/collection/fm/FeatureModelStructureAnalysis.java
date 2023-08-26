@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.collection.fm.analyses.*;
+import org.collection.fm.handler.AnalysisHandler;
 import org.collection.fm.util.FMUtils;
 import org.collection.fm.util.FileUtils;
 

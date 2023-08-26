@@ -1,11 +1,13 @@
-package org.collection.fm.analyses;
+package org.collection.fm.handler;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
+import org.collection.fm.analyses.IFMAnalysis;
 import org.collection.fm.analyses.IFMAnalysis.Format;
+import org.collection.fm.analyses.NumberOfValidConfigurationsLog;
 import org.collection.fm.util.CnfTranslator;
 import org.collection.fm.util.FMUtils;
 import org.collection.fm.util.FileUtils;

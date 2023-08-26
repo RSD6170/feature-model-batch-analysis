@@ -1,6 +1,4 @@
-package org.collection.fm.analyses;
-
-import org.collection.fm.util.BinaryRunner;
+package org.collection.fm.handler;
 
 import java.nio.file.Path;
 import java.util.List;
