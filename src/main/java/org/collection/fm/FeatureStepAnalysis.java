@@ -34,57 +34,57 @@ public class FeatureStepAnalysis {
 
     public static void initializeHandler(AnalysisStepHandler stepHandler){
 
-        FeatureStepHandler featureStepHandler = new FeatureStepHandler(30, "Feature-basic");
+        FeatureStepHandler featureStepHandler = new FeatureStepHandler(60, "Feature-basic");
         featureStepHandler.addAnalysis(new NumberOfFeatures());
         featureStepHandler.addAnalysis(new NumberOfLeafFeatures());
         featureStepHandler.addAnalysis(new NumberOfTopFeatures());
         stepHandler.registerFeatureStep(featureStepHandler);
 
-        featureStepHandler = new FeatureStepHandler(30, "Feature-constraints");
+        featureStepHandler = new FeatureStepHandler(60, "Feature-constraints");
         featureStepHandler.addAnalysis(new NumberOfConstraints());
         featureStepHandler.addAnalysis(new AverageConstraintSize());
         featureStepHandler.addAnalysis(new CtcDensity());
         featureStepHandler.addAnalysis(new FeaturesInConstraintsDensity());
         stepHandler.registerFeatureStep(featureStepHandler);
 
-        featureStepHandler = new FeatureStepHandler(30, "Feature-tree");
+        featureStepHandler = new FeatureStepHandler(60, "Feature-tree");
         featureStepHandler.addAnalysis(new TreeDepth());
         featureStepHandler.addAnalysis(new AverageNumberOfChilden());
         stepHandler.registerFeatureStep(featureStepHandler);
 
-        featureStepHandler = new FeatureStepHandler(30, "Feature-clause");
+        featureStepHandler = new FeatureStepHandler(60, "Feature-clause");
         featureStepHandler.addAnalysis(new NumberOfClauses());
         featureStepHandler.addAnalysis(new NumberOfLiterals());
         featureStepHandler.addAnalysis(new ClauseDensity());
         stepHandler.registerFeatureStep(featureStepHandler);
 
-        featureStepHandler = new FeatureStepHandler(30, "Feature-dense");
+        featureStepHandler = new FeatureStepHandler(60, "Feature-dense");
         featureStepHandler.addAnalysis(new RatioOfOptionalFeatures());
         featureStepHandler.addAnalysis(new ConnectivityDensity());
         stepHandler.registerFeatureStep(featureStepHandler);
 
-        featureStepHandler = new FeatureStepHandler(30, "Feature-core");
+        featureStepHandler = new FeatureStepHandler(60, "Feature-core");
         featureStepHandler.addAnalysis(new VoidModel());
         featureStepHandler.addAnalysis(new NumberOfCoreFeatures());
         featureStepHandler.addAnalysis(new NumberOfDeadFeatures());
         stepHandler.registerFeatureStep(featureStepHandler);
 
-        featureStepHandler = new FeatureStepHandler(30, "Feature-valid");
+        featureStepHandler = new FeatureStepHandler(60, "Feature-valid");
         featureStepHandler.addAnalysis(new NumberOfValidConfigurationsLog());
         stepHandler.registerFeatureStep(featureStepHandler);
 
-        featureStepHandler = new FeatureStepHandler(30, "Feature-cyclo");
+        featureStepHandler = new FeatureStepHandler(60, "Feature-cyclo");
         featureStepHandler.addAnalysis(new SimpleCyclomaticComplexity());
         featureStepHandler.addAnalysis(new IndependentCyclomaticComplexity());
         stepHandler.registerFeatureStep(featureStepHandler);
 
-        stepHandler.registerFeatureStep(new SatzillaHandler(30, SatzillaHandler.SatzillaTypes.BASE));
-        stepHandler.registerFeatureStep(new SatzillaHandler(30, SatzillaHandler.SatzillaTypes.SP));
-        stepHandler.registerFeatureStep(new SatzillaHandler(30, SatzillaHandler.SatzillaTypes.DIA));
-        stepHandler.registerFeatureStep(new SatzillaHandler(30, SatzillaHandler.SatzillaTypes.CL));
-        stepHandler.registerFeatureStep(new SatzillaHandler(30, SatzillaHandler.SatzillaTypes.UNIT));
-        stepHandler.registerFeatureStep(new SatzillaHandler(30, SatzillaHandler.SatzillaTypes.LS));
-        stepHandler.registerFeatureStep(new SatzillaHandler(30, SatzillaHandler.SatzillaTypes.LOBJOIS));
-        stepHandler.registerFeatureStep(new SatzillaHandler(30, SatzillaHandler.SatzillaTypes.LP));
+        stepHandler.registerFeatureStep(new SatzillaHandler(60, SatzillaHandler.SatzillaTypes.BASE));
+        stepHandler.registerFeatureStep(new SatzillaHandler(60, SatzillaHandler.SatzillaTypes.SP));
+        stepHandler.registerFeatureStep(new SatzillaHandler(60, SatzillaHandler.SatzillaTypes.DIA));
+        stepHandler.registerFeatureStep(new SatzillaHandler(60, SatzillaHandler.SatzillaTypes.CL));
+        stepHandler.registerFeatureStep(new SatzillaHandler(60, SatzillaHandler.SatzillaTypes.UNIT));
+        stepHandler.registerFeatureStep(new SatzillaHandler(60, SatzillaHandler.SatzillaTypes.LS));
+        stepHandler.registerFeatureStep(new SatzillaHandler(60, SatzillaHandler.SatzillaTypes.LOBJOIS));
+        stepHandler.registerFeatureStep(new SatzillaHandler(60, SatzillaHandler.SatzillaTypes.LP));
     }
 }
