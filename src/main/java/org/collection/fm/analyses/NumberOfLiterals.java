@@ -26,6 +26,7 @@ public class NumberOfLiterals implements IFMAnalysis {
         Node cnf = formula.getCNFNode();
         int numberOfLiterals = 0;
         for (Node clause : cnf.getChildren()) {
+            if (Thread.currentThread().isInterrupted()) break;
             if (!(clause instanceof Or)) {
                 System.out.println("Not CNF");
                 return null;

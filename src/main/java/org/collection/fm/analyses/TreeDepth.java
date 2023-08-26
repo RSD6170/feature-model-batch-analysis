@@ -36,6 +36,7 @@ public class TreeDepth implements IFMAnalysis {
 			return 1; // decide whether 0 or 1 is correct
 		}
 		for(IFeatureStructure child : structure.getChildren()) {
+            if (Thread.currentThread().isInterrupted()) break;
 			depthOfChildren.add(getTreeDepthRecursive(child));
 		}
 		return Collections.max(depthOfChildren) + 1;

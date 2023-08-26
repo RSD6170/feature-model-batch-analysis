@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import de.ovgu.featureide.fm.core.analysis.cnf.analysis.HasSolutionAnalysis;
 import org.prop4j.Node;
 
 import de.ovgu.featureide.fm.attributes.FMAttributesLibrary;
@@ -29,7 +30,7 @@ public class FMUtils {
 		IFeatureModel featureModel = null;
 		try {
 			featureModel = FeatureModelManager.load(Paths.get(path));
-		} catch (Exception e) {}
+		} catch (Exception ignored) {}
 		return featureModel;
 	}
 	
@@ -78,8 +79,10 @@ public class FMUtils {
 		return coreAncestors;
 	}
 
-	public static boolean isVoid(FeatureModelFormula formula) {
-		return formula.getAnalyzer().isValid(new NullMonitor<Boolean>());
+	public static boolean isVoid(FeatureModelFormula formula, int timeout) throws Exception {
+		HasSolutionAnalysis analysis = new HasSolutionAnalysis(formula.getCNF());
+		analysis.setTimeout(1000*timeout);
+		return analysis.execute(new NullMonitor<>());
 	}
 	
 	public static Set<IFeature> getCoreFeatures(FeatureModelFormula formula) {

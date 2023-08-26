@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.collection.fm.analyses.*;
 import org.collection.fm.handler.AnalysisHandler;
+import org.collection.fm.util.AnalysisCacher;
 import org.collection.fm.util.FMUtils;
 import org.collection.fm.util.FileUtils;
 
@@ -60,6 +61,7 @@ public class FeatureModelStructureAnalysis {
 
 	private void initializeAnalyses() {
 		analysisHandler = new AnalysisHandler();
+		AnalysisCacher analysisCacher = new AnalysisCacher();
 		analysisHandler.registerAnalysis(new NumberOfFeatures());
 		analysisHandler.registerAnalysis(new NumberOfLeafFeatures());
 		analysisHandler.registerAnalysis(new NumberOfTopFeatures());
@@ -76,12 +78,12 @@ public class FeatureModelStructureAnalysis {
 		analysisHandler.registerAnalysis(new NumberOfLiterals());
 		analysisHandler.registerAnalysis(new ClauseDensity());
 		
-		analysisHandler.registerAnalysis(new RatioOfOptionalFeatures());
+		analysisHandler.registerAnalysis(new RatioOfOptionalFeatures(analysisCacher));
 		analysisHandler.registerAnalysis(new ConnectivityDensity());
-		
+
 		analysisHandler.registerAnalysis(new VoidModel());
-		analysisHandler.registerAnalysis(new NumberOfCoreFeatures());
-		analysisHandler.registerAnalysis(new NumberOfDeadFeatures());
+		analysisHandler.registerAnalysis(new NumberOfCoreFeatures(analysisCacher));
+		analysisHandler.registerAnalysis(new NumberOfDeadFeatures(analysisCacher));
 
 		analysisHandler.registerAnalysis(new NumberOfValidConfigurationsLog());
 

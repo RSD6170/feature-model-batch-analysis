@@ -74,10 +74,11 @@ public class ConnectivityGraph {
         Stack<String> stack = new Stack<>();
         String start =  vertices.values().iterator().next().getVariable();
         stack.push(start);
-        while (!stack.isEmpty()) {
+        while (!stack.isEmpty() && !Thread.currentThread().isInterrupted()) {
             Vertex current = getVertex(stack.pop());
             current.setVisited(true);
             for (String dest : current.getAdjacencyList()) {
+                if (Thread.currentThread().isInterrupted()) break;
                 Vertex destV = getVertex(dest);
                 if (stack.contains(dest) && !destV.isVisited()) { // cycle found
                     cycleCounter++;

@@ -21,7 +21,13 @@ public class VoidModel implements IFMAnalysis {
 
     @Override
     public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
-        return FMUtils.isVoid(formula) ? "1" : "0";
+        try {
+            return FMUtils.isVoid(formula, timeout) ? "1" : "0";
+        } catch (Exception e) {
+            System.out.println("VoidModel just crashed!");
+            e.printStackTrace();
+            return "?";
+        }
     }
 
     @Override

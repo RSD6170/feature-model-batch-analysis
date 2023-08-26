@@ -25,6 +25,7 @@ public class AverageNumberOfChilden implements IFMAnalysis {
 		int childrenCount = 0;
 		int numberOfNonLeafFeatures = 0;
 		for (IFeature feature : featureModel.getFeatures()) {
+			if (Thread.currentThread().isInterrupted()) break;
 			int numberOfChildren = feature.getStructure().getChildrenCount();
 			if (numberOfChildren != 0) {
 				numberOfNonLeafFeatures++;

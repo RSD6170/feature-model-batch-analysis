@@ -32,6 +32,7 @@ public class NumberOfLeafFeatures implements IFMAnalysis {
 			return 1;
 		}
 		for(IFeatureStructure child :structure.getChildren()) {
+            if (Thread.currentThread().isInterrupted()) break;
 			count += getNumberOfLeafChildren(child);
 		}
 		return count;

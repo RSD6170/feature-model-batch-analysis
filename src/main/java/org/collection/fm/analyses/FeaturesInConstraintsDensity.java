@@ -33,6 +33,7 @@ public class FeaturesInConstraintsDensity implements IFMAnalysis {
 		
 		Set<IFeature> appearingFeatures = new HashSet<>();
 		for (IConstraint constraint : constraints) {
+            if (Thread.currentThread().isInterrupted()) break;
 			appearingFeatures.addAll(constraint.getContainedFeatures());
 		}
 		

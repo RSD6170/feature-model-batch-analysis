@@ -28,6 +28,7 @@ public class AverageConstraintSize implements IFMAnalysis {
 			return "0";
 		}
 		for (IConstraint constraint : featureModel.getConstraints()) {
+            if (Thread.currentThread().isInterrupted()) break;
 			sizeCount += constraint.getNode().getLiterals().size();
 		}
 		return Double.toString(sizeCount / numberOfConstraints);

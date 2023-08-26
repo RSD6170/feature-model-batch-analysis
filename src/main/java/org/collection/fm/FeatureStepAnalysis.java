@@ -1,9 +1,11 @@
 package org.collection.fm;
 
+import org.checkerframework.checker.units.qual.A;
 import org.collection.fm.analyses.*;
 import org.collection.fm.handler.AnalysisStepHandler;
 import org.collection.fm.handler.FeatureStepHandler;
 import org.collection.fm.handler.SatzillaHandler;
+import org.collection.fm.util.AnalysisCacher;
 import org.collection.fm.util.FMUtils;
 import org.collection.fm.util.FileUtils;
 
@@ -62,14 +64,17 @@ public class FeatureStepAnalysis {
         stepHandler.registerFeatureStep(featureStepHandler);
 
         featureStepHandler = new FeatureStepHandler(60, "Feature-dense");
-        featureStepHandler.addAnalysis(new RatioOfOptionalFeatures());
         featureStepHandler.addAnalysis(new ConnectivityDensity());
         stepHandler.registerFeatureStep(featureStepHandler);
 
         featureStepHandler = new FeatureStepHandler(60, "Feature-core");
         featureStepHandler.addAnalysis(new VoidModel());
-        featureStepHandler.addAnalysis(new NumberOfCoreFeatures());
-        featureStepHandler.addAnalysis(new NumberOfDeadFeatures());
+
+        AnalysisCacher analysisCacher = new AnalysisCacher();
+
+        featureStepHandler.addAnalysis(new NumberOfCoreFeatures(analysisCacher));
+        featureStepHandler.addAnalysis(new NumberOfDeadFeatures(analysisCacher));
+        featureStepHandler.addAnalysis(new RatioOfOptionalFeatures(analysisCacher));
         stepHandler.registerFeatureStep(featureStepHandler);
 
         featureStepHandler = new FeatureStepHandler(60, "Feature-valid");
