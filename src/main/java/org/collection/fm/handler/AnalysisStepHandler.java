@@ -73,7 +73,7 @@ public class AnalysisStepHandler {
 
 
     public void initializeHandler(EnumMap<AnalysisStepsEnum, Integer> selectionMap){
-        selectionMap.entrySet().stream().filter(e -> e.getValue() <= 0).map(e -> e.getKey().getFeatureStepHandler(e.getValue())).forEachOrdered(this::registerFeatureStep);
+        selectionMap.entrySet().stream().filter(e -> e.getValue() > 0).map(e -> e.getKey().getFeatureStepHandler(e.getValue())).forEachOrdered(this::registerFeatureStep);
     }
 
 

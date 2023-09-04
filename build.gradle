@@ -14,9 +14,14 @@ repositories {
 }
 
 dependencies {
-    implementation fileTree(dir: 'lib', include: '*.jar')
     implementation 'org.apache.commons:commons-csv:1.10.0'
     implementation 'com.google.guava:guava:32.1.2-jre'
+
+    implementation files("lib/antlr-3.4.jar")
+    implementation files("lib/de.ovgu.featureide.lib.fm.attributes-v3.9.2.jar")
+    implementation files("lib/de.ovgu.featureide.lib.fm-v3.9.2.jar")
+    implementation files("lib/org.sat4j.core.jar")
+    implementation files("lib/uvl-parser.jar")
 }
 
 group = 'org.collection.fm'
