@@ -13,16 +13,29 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
+/**
+ * Handles analysis of all {@link FeatureStepHandler}
+ */
 public class AnalysisStepHandler {
 
     private final List<FeatureStepHandler> featureSteps = new ArrayList<>();
 
 
-
+    /**
+     * Registers a {@link FeatureStepHandler}
+     * @param featureStep {@link FeatureStepHandler} to be registered
+     */
     public void registerFeatureStep(FeatureStepHandler featureStep) {
         featureSteps.add(featureStep);
     }
 
+    /**
+     * Analysises all files with registered {@link FeatureStepHandler}
+     * @param files Files to be analyzed
+     * @param outputResult Path for results csv file
+     * @param outputTime Path for time csv file
+     * @param outputStatus Path for runstatus csv file
+     */
     public void handleFiles(List<File> files, String outputResult, String outputTime, String outputStatus){
         try(CSVPrinter resultWriter = new CSVPrinter(new BufferedWriter(new FileWriter(outputResult)), generateCSVFormatResult());
             CSVPrinter timeWriter = new CSVPrinter(new BufferedWriter(new FileWriter(outputTime)), generateCSVFormatStatus());
@@ -52,6 +65,11 @@ public class AnalysisStepHandler {
         }
     }
 
+    /**
+     * Analysis a single File
+     * @param file File to analyse
+     * @return List of analysis results as {@link FeatureStep}s
+     */
     public List<FeatureStep> getSingleAnalysis(File file) {
         try(ExecutorService executorService = Executors.newSingleThreadExecutor()){
             return handleFile(file, executorService);

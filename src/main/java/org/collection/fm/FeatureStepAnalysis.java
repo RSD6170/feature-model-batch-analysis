@@ -15,6 +15,11 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 
+/**
+ * Entry point for command line based analysis.
+ *
+ * Uses all feature steps with 60 secs timeout.
+ */
 public class FeatureStepAnalysis {
 
     public static void main(String[] args) {
