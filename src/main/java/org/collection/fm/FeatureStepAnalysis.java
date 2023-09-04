@@ -41,7 +41,7 @@ public class FeatureStepAnalysis {
 
         List<File> files = FileUtils.getFileList(args[0]);
 
-        analysis.handleFiles(files, args[0], args.length == 1 ? "result.csv" : args[1], args.length == 1 ? "time.csv" : args[2], args.length == 1 ? "runstatus.csv" : args[3]);
+        analysis.handleFiles(files, args.length == 1 ? "result.csv" : args[1], args.length == 1 ? "time.csv" : args[2], args.length == 1 ? "runstatus.csv" : args[3]);
     }
 
 }

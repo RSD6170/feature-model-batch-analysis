@@ -23,7 +23,7 @@ public class AnalysisStepHandler {
         featureSteps.add(featureStep);
     }
 
-    public void handleFiles(List<File> files, String inputPath, String outputResult, String outputTime, String outputStatus){
+    public void handleFiles(List<File> files, String outputResult, String outputTime, String outputStatus){
         try(CSVPrinter resultWriter = new CSVPrinter(new BufferedWriter(new FileWriter(outputResult)), generateCSVFormatResult());
             CSVPrinter timeWriter = new CSVPrinter(new BufferedWriter(new FileWriter(outputTime)), generateCSVFormatStatus());
             CSVPrinter statusWriter = new CSVPrinter(new BufferedWriter(new FileWriter(outputStatus)), generateCSVFormatStatus());
@@ -49,6 +49,12 @@ public class AnalysisStepHandler {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public List<FeatureStep> getSingleAnalysis(File file) {
+        try(ExecutorService executorService = Executors.newSingleThreadExecutor()){
+            return handleFile(file, executorService);
         }
     }
 
