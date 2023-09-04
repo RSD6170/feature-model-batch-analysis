@@ -1,9 +1,6 @@
 package org.collection.fm.formulagraph;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
-import java.util.Vector;
+import java.util.*;
 
 import org.prop4j.Node;
 import org.prop4j.Or;
@@ -71,7 +68,7 @@ public class ConnectivityGraph {
     // performs a dfs to compute the number of cycles
     public int getNumberOfCycles() {
         int cycleCounter = 0;
-        Stack<String> stack = new Stack<>();
+        Deque<String> stack = new ArrayDeque<>();
         String start =  vertices.values().iterator().next().getVariable();
         stack.push(start);
         while (!stack.isEmpty() && !Thread.currentThread().isInterrupted()) {
@@ -93,9 +90,9 @@ public class ConnectivityGraph {
     // computes the number of independent cycles
     // i.e. the vertices in each cycle are not a subset of another one
     public int getNumberOfIndependentCycles() {
-        Stack<String> stack = new Stack<>();
+        Deque<String> stack = new ArrayDeque<>();
         String start =  vertices.values().iterator().next().getVariable();
-        Vector<Vector<String>> cycleLog = new Vector<>();
+        List<List<String>> cycleLog = new ArrayList<>();
         stack.push(start);
 
         // key: child, value: parent
@@ -111,7 +108,7 @@ public class ConnectivityGraph {
                 Vertex destV = getVertex(dest);
                 if (stack.contains(dest) && !destV.isVisited()) { // cycle found
                     // get the path beginning at the root of the dfs
-                    Vector<String> pathLog = new Vector<>();
+                    List<String> pathLog = new ArrayList<>();
                     pathLog.add(dest);
                     String next = current;
                     while (next != null && !pathLog.contains(next)) {
@@ -121,15 +118,17 @@ public class ConnectivityGraph {
 
                     // check for not independent cycles before inserting
                     boolean independent = true;
-                    for(Vector<String> elem :  cycleLog) {
+                    HashSet<String> pathLogSet = new HashSet<>(pathLog);
+                    for(List<String> elemList :  cycleLog) {
                         if (Thread.currentThread().isInterrupted()) return -1;
+                        HashSet<String> elem = new HashSet<>(elemList);
                         if (elem.size() >= pathLog.size()) {
                             if (elem.containsAll(pathLog)) {
                                 independent = false;
                                 break;
                             }
                         } else {
-                            if (pathLog.containsAll(elem)) {
+                            if (pathLogSet.containsAll(elem)) {
                                 independent = false;
                                 break;
                             }

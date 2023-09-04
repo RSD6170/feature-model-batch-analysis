@@ -29,13 +29,13 @@ public class FeatureStepAnalysis {
 
         FMUtils.installLibraries();
         if (args.length < 1) {
-            System.out.println("""
+            System.err.println("""
                     Mandatory argument([0]): Input path
                     Optional Argument([1]): Output path results
                     Optional Argument([2]): Output path time
                     Optional Argument([3]): Output path runstatus
                     """);
-            return;
+            System.exit(-1);
         }
 
         EnumMap<AnalysisStepsEnum, Integer> enumMap = new EnumMap<>(AnalysisStepsEnum.class);

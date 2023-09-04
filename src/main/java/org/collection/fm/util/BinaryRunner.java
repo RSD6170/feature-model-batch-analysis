@@ -42,27 +42,27 @@ public class BinaryRunner {
 
 
 	public static BinaryResult runBinaryStatic(String[] commands, long timeout) {
-		try {
-			final Process ps = new ProcessBuilder(commands).redirectErrorStream(true).start();
-			long pid = ps.pid();
-				if(!ps.waitFor(timeout, TimeUnit.SECONDS)) {
-					killProcesses(ps.toHandle());
+        try {
+            final Process ps = new ProcessBuilder(commands).redirectErrorStream(true).start();
+            long pid = ps.pid();
+            if (!ps.waitFor(timeout, TimeUnit.SECONDS)) {
+                killProcesses(ps.toHandle());
 
-					return new BinaryResult("", Status.TIMEOUT);
-				}
+                return new BinaryResult("", Status.TIMEOUT);
+            }
 
-			StringBuilder val = new StringBuilder();
-		    String line;
-			try(BufferedReader in = new BufferedReader(new InputStreamReader(ps.getInputStream()))){
-				while ((line = in.readLine()) != null) {
-					val.append(line).append("\n");
-				}
-			}
-			return new BinaryResult(val.toString(), Status.SOLVED);
-		} catch (final Exception e) {
-			return new BinaryResult("", Status.UNEXPECTED);
-		}
-	}
+            StringBuilder val = new StringBuilder();
+            String line;
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(ps.getInputStream()))) {
+                while ((line = in.readLine()) != null) {
+                    val.append(line).append("\n");
+                }
+            }
+            return new BinaryResult(val.toString(), Status.SOLVED);
+        } catch (IOException | InterruptedException e) {
+            return new BinaryResult("", Status.UNEXPECTED);
+        }
+    }
 
 	private static void killProcesses(ProcessHandle ps)  {
         ps.descendants().forEach(BinaryRunner::killProcesses);

@@ -12,13 +12,11 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Date;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class MCCTransformer {
 
-    public static final double timeout = 3601;
+    public static final double TIMEOUT = 3601;
 
     public static final Path csvFile = Path.of("/home/ubuntu/mcc2022/x_ana_mcc2022/3-outputs_track1_mc_private/0_all/5-correct.csv");
     public static final Path outputFile = Path.of("algo_runs_private.csv");
@@ -39,13 +37,13 @@ public class MCCTransformer {
                 switch (e.get("status")){
                     case "complete" -> {
                         if (Objects.equals(e.get("corr"), "1")) table.put(benchmark, solver, walltime);
-                        else table.put(benchmark, solver, timeout);
+                        else table.put(benchmark, solver, TIMEOUT);
                     }
                     case "memout" -> {
-                        table.put(benchmark, solver, timeout);
+                        table.put(benchmark, solver, TIMEOUT);
                     }
                     case "timeout (cpu)", "timeout (wallclock)" -> {
-                        table.put(benchmark, solver, timeout);
+                        table.put(benchmark, solver, TIMEOUT);
                     }
                     default -> {
                         throw new RuntimeException(e.toString());
@@ -57,7 +55,7 @@ public class MCCTransformer {
             printer.printRecords(table.rowMap().entrySet().stream()
                     .map(entry -> ImmutableList.builder()
                             .add(entry.getKey()).addAll(entry.getValue().values()).build())
-                    .collect(Collectors.toList()));
+                    .toList());
 
         } catch (IOException e) {
             throw new RuntimeException(e);

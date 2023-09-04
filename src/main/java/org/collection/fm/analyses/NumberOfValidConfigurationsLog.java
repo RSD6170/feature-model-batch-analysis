@@ -28,7 +28,7 @@ public class NumberOfValidConfigurationsLog implements IFMAnalysis {
     private static final String UNSAT_FLAG = "s 0";
 
 
-    private final static String BINARY_PATH = "solver" + File.separator + "d4";
+    private static final String BINARY_PATH = "solver" + File.separator + "d4";
 
     @Override
     public String getLabel() {

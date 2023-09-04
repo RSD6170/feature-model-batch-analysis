@@ -14,13 +14,13 @@ public class CnfTranslator {
 
     public static void main(String[] args) {
         FMUtils.installLibraries();
-        String csvContent = "model;translation time(milliseconds)\n";
+        StringBuilder csvContent = new StringBuilder("model;translation time(milliseconds)\n");
         FileUtils.createDirIfItDoesntExist("cnf/evo");
         
         for (File file : FileUtils.getFileList("evolution")) {
-            csvContent += handleFile(file);
+            csvContent.append(handleFile(file));
         }
-        FileUtils.writeContentToFileAndCreateDirs("cnf" + File.separator + "runtimes_evo.csv", csvContent, true);
+        FileUtils.writeContentToFileAndCreateDirs("cnf" + File.separator + "runtimes_evo.csv", csvContent.toString(), true);
         
     }
 

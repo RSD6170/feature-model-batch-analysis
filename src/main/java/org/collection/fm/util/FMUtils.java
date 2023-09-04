@@ -30,7 +30,9 @@ public class FMUtils {
 		IFeatureModel featureModel = null;
 		try {
 			featureModel = FeatureModelManager.load(Paths.get(path));
-		} catch (Exception ignored) {}
+		} catch (Exception ignored) {
+			//ignored
+		}
 		return featureModel;
 	}
 	
@@ -86,15 +88,15 @@ public class FMUtils {
 	}
 	
 	public static Set<IFeature> getCoreFeatures(FeatureModelFormula formula) {
-		return new HashSet<>(formula.getAnalyzer().getCoreFeatures(new NullMonitor<LiteralSet>()));
+		return new HashSet<>(formula.getAnalyzer().getCoreFeatures(new NullMonitor<>()));
 	}
 	
 	public static Set<IFeature> getDeadFeatures(FeatureModelFormula formula) {
-		return new HashSet<>(formula.getAnalyzer().getDeadFeatures(new NullMonitor<LiteralSet>()));
+		return new HashSet<>(formula.getAnalyzer().getDeadFeatures(new NullMonitor<>()));
 	}
 	
 	public static Set<IFeature> getFalseOptionalFeatures(FeatureModelFormula formula) {
-		return new HashSet<>(formula.getAnalyzer().getFalseOptionalFeatures(new NullMonitor<List<LiteralSet>>()));
+		return new HashSet<>(formula.getAnalyzer().getFalseOptionalFeatures(new NullMonitor<>()));
 	}
 	
 	public static IFeature getParent(IFeature feat) {
