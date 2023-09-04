@@ -4,6 +4,7 @@ import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.collection.fm.util.AnalysisStepsEnum;
 import org.collection.fm.util.FMUtils;
 
 import java.io.*;
@@ -70,6 +71,10 @@ public class AnalysisStepHandler {
         ).build();
     }
 
+
+    public void initializeHandler(EnumMap<AnalysisStepsEnum, Integer> selectionMap){
+        selectionMap.entrySet().stream().filter(e -> e.getValue() <= 0).map(e -> e.getKey().getFeatureStepHandler(e.getValue())).forEachOrdered(this::registerFeatureStep);
+    }
 
 
 }
