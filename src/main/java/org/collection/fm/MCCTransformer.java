@@ -1,26 +1,31 @@
 package org.collection.fm;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Table;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
+
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Objects;
+import java.util.*;
+
 
 public class MCCTransformer {
 
     public static final double TIMEOUT = 3601;
 
-    public static final Path csvFile = Path.of("/home/ubuntu/mcc2022/x_ana_mcc2022/3-outputs_track1_mc_private/0_all/5-correct.csv");
+    public static final Path csvFile = Path.of("C:\\Users\\rsd61\\Downloads\\x_ana_mcc2022\\x_ana_mcc2022\\5-correct.csv");
     public static final Path outputFile = Path.of("algo_runs_private.csv");
 
+
+    private record SolverEntry( String instance, String solver, double walltime) {
+
+    }private record KeyEntry( String instance, String solver) {
+
+    }
 
     public static void main(String[] args) {
 
@@ -28,22 +33,31 @@ public class MCCTransformer {
 
         try (CSVParser parser = CSVParser.parse(csvFile, Charset.defaultCharset(), CSVFormat.Builder.create(CSVFormat.DEFAULT).setHeader().setAllowMissingColumnNames(true).setSkipHeaderRecord(true).build());
              CSVPrinter printer = new CSVPrinter(Files.newBufferedWriter(outputFile, Charset.defaultCharset(), StandardOpenOption.CREATE), CSVFormat.Builder.create().build())){
-            Table<String, String, Double> table = HashBasedTable.create();
+
+            HashMap<KeyEntry, Double> entryMap = new HashMap<>(1000);
+            HashSet<String> instances = new HashSet<>();
+            HashSet<String> solvers = new HashSet<>();
+
             parser.stream().forEach(e -> {
                 String benchmark = e.get("benchmark");
                 String solver = e.get("solver")+"/"+e.get("configuration");
+
+                instances.add(benchmark);
+                solvers.add(solver);
+
+                KeyEntry keyEntry = new KeyEntry(benchmark, solver);
                 double walltime = Double.parseDouble(e.get("wall_time"));
 
                 switch (e.get("status")){
                     case "complete" -> {
-                        if (Objects.equals(e.get("corr"), "1")) table.put(benchmark, solver, walltime);
-                        else table.put(benchmark, solver, TIMEOUT);
+                        if (Objects.equals(e.get("corr"), "1")) entryMap.put(keyEntry, walltime);
+                        else entryMap.put(keyEntry, TIMEOUT);
                     }
                     case "memout" -> {
-                        table.put(benchmark, solver, TIMEOUT);
+                        entryMap.put(keyEntry, TIMEOUT);
                     }
                     case "timeout (cpu)", "timeout (wallclock)" -> {
-                        table.put(benchmark, solver, TIMEOUT);
+                        entryMap.put(keyEntry, TIMEOUT);
                     }
                     default -> {
                         throw new RuntimeException(e.toString());
@@ -51,12 +65,15 @@ public class MCCTransformer {
                 }
             });
             printer.print("instance");
-            printer.printRecord(table.columnKeySet());
-            printer.printRecords(table.rowMap().entrySet().stream()
-                    .map(entry -> ImmutableList.builder()
-                            .add(entry.getKey()).addAll(entry.getValue().values()).build())
-                    .toList());
-
+            printer.printRecord(solvers.stream().sorted());
+            instances.stream().sorted().forEach(instance ->{
+                try {
+                    printer.print(instance);
+                    printer.printRecord(solvers.stream().sorted().map(solver -> entryMap.getOrDefault(new KeyEntry(instance, solver), TIMEOUT+110)));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
