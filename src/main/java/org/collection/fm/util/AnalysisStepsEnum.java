@@ -4,6 +4,9 @@ import org.collection.fm.analyses.*;
 import org.collection.fm.handler.FeatureStepHandler;
 import org.collection.fm.handler.SatzillaHandler;
 
+import java.util.Arrays;
+import java.util.NoSuchElementException;
+
 public enum AnalysisStepsEnum {
 
     FeatureBasic,
@@ -22,6 +25,10 @@ public enum AnalysisStepsEnum {
     SatzillaLS,
     SatzillaLOBJOIS,
     SatzillaLP;
+
+    public static AnalysisStepsEnum getIgnoreCase(String string) throws NoSuchElementException {
+        return Arrays.stream(AnalysisStepsEnum.values()).filter(e -> e.toString().equalsIgnoreCase(string)).findFirst().orElse(null);
+    }
 
     public FeatureStepHandler getFeatureStepHandler(int timeout) {
         return switch (this) {
