@@ -4,6 +4,7 @@ import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.collection.fm.FeatureStepAnalysis;
 import org.collection.fm.util.AnalysisStepsEnum;
 import org.collection.fm.util.FMUtils;
 
@@ -12,6 +13,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -20,6 +22,7 @@ import java.util.stream.Stream;
 public class AnalysisStepHandler {
 
     private final List<FeatureStepHandler> featureSteps = new ArrayList<>();
+    private final EnumMap<AnalysisStepsEnum, Boolean> activeSteps = new EnumMap<>(AnalysisStepsEnum.class);
     private final Path solverRelativePath;
 
     public AnalysisStepHandler(Path solverRelativePath) {
@@ -77,9 +80,19 @@ public class AnalysisStepHandler {
      */
     public List<FeatureStep> getSingleAnalysis(File file) {
         try(ExecutorService executorService = Executors.newSingleThreadExecutor()){
-            return handleFile(file, executorService);
+            IFeatureModel featureModel = FMUtils.readFeatureModel(file.getPath());
+            if (featureModel == null) return null;
+            FeatureModelFormula formula = new FeatureModelFormula(featureModel);
+            Queue<FeatureStep> featureStepQueue = featureSteps.stream().map(e -> e.evaluateFeatureStep(executorService, featureModel, formula, file.toPath(), solverRelativePath)).collect(Collectors.toCollection(LinkedList::new));
+            return activeSteps.entrySet().stream().map( e -> {
+                if (e.getValue()) return featureStepQueue.poll();
+                else return new FeatureStep(file.toPath(),
+                        e.getKey().getFeatureStepHandler(-1).getCSVHeader().stream().map( k -> "?").toList(),
+                        -1, FeatureStatus.ok);
+            }).toList();
         }
     }
+
 
     private List<FeatureStep> handleFile(File file, ExecutorService executorService) {
         IFeatureModel featureModel = FMUtils.readFeatureModel(file.getPath());
@@ -103,6 +116,7 @@ public class AnalysisStepHandler {
 
     public void initializeHandler(EnumMap<AnalysisStepsEnum, Integer> selectionMap){
         selectionMap.entrySet().stream().filter(e -> e.getValue() > 0).map(e -> e.getKey().getFeatureStepHandler(e.getValue())).forEachOrdered(this::registerFeatureStep);
+        Arrays.stream(AnalysisStepsEnum.values()).forEach(e -> activeSteps.put(e, !selectionMap.containsKey(e) || selectionMap.get(e) <= 0));
     }
 
 
