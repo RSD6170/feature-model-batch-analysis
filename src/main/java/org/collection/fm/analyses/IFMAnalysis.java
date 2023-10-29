@@ -5,6 +5,8 @@ import org.prop4j.Node;
 import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 
+import java.nio.file.Path;
+
 public interface IFMAnalysis {
 
 
@@ -29,10 +31,11 @@ public interface IFMAnalysis {
      *
      * @param featureModel
      * @param formula
-     * @param timeout      timeout
+     * @param timeout            timeout
+     * @param solverRelativePath
      * @return String to be saved in the csv for that model
      */
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout);
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath);
 
 
     /**

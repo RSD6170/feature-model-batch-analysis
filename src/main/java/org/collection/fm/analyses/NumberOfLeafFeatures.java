@@ -6,6 +6,8 @@ import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.base.IFeatureStructure;
 
+import java.nio.file.Path;
+
 public class NumberOfLeafFeatures implements IFMAnalysis {
 
     private static final String LABEL = "NumberOfLeafFeatures";
@@ -21,7 +23,7 @@ public class NumberOfLeafFeatures implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) {
         return Integer.toString(getNumberOfLeafChildren(featureModel.getStructure().getRoot()));
     }
 

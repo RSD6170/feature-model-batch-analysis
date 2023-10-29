@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -69,10 +70,10 @@ public class BinaryRunner {
 		ps.destroy();
 	}
 
-	public static BinaryResult runSolverWithDir(Function<Path, String[]> commands, long timeout, FeatureModelFormula formula){
+	public static BinaryResult runSolverWithDir(BiFunction<Path, Path, String[]> commands, long timeout, FeatureModelFormula formula, Path solverRelativePath){
 		try {
 			Path dir = createTemporaryDimacs(formula);
-			BinaryResult result = runBinaryStatic(commands.apply(dir.resolve(TEMPORARY_DIMACS_PATH)), timeout);
+			BinaryResult result = runBinaryStatic(commands.apply(solverRelativePath, dir.resolve(TEMPORARY_DIMACS_PATH)), timeout);
 			cleanUpTemp(dir);
 			return result;
 		} catch (IOException e) {

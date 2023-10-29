@@ -8,6 +8,7 @@ import org.collection.fm.util.AnalysisStepsEnum;
 import org.collection.fm.util.FMUtils;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,7 +20,11 @@ import java.util.stream.Stream;
 public class AnalysisStepHandler {
 
     private final List<FeatureStepHandler> featureSteps = new ArrayList<>();
+    private final Path solverRelativePath;
 
+    public AnalysisStepHandler(Path solverRelativePath) {
+        this.solverRelativePath = solverRelativePath;
+    }
 
     /**
      * Registers a {@link FeatureStepHandler}
@@ -80,7 +85,7 @@ public class AnalysisStepHandler {
         IFeatureModel featureModel = FMUtils.readFeatureModel(file.getPath());
         if (featureModel == null) return null;
         FeatureModelFormula formula = new FeatureModelFormula(featureModel);
-        return featureSteps.stream().map(e -> e.evaluateFeatureStep(executorService, featureModel, formula, file.toPath())).toList();
+        return featureSteps.stream().map(e -> e.evaluateFeatureStep(executorService, featureModel, formula, file.toPath(), solverRelativePath)).toList();
     }
 
     private CSVFormat generateCSVFormatResult(){

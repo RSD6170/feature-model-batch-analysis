@@ -6,6 +6,8 @@ import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 import de.ovgu.featureide.fm.core.base.IConstraint;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 
+import java.nio.file.Path;
+
 public class AverageConstraintSize implements IFMAnalysis {
 
     private static final String LABEL = "AverageConstraintSize";
@@ -21,7 +23,7 @@ public class AverageConstraintSize implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) {
         double sizeCount = 0;
 		int numberOfConstraints = featureModel.getConstraintCount();
 		if (numberOfConstraints == 0) {

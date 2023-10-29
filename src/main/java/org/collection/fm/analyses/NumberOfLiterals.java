@@ -6,6 +6,8 @@ import org.prop4j.Or;
 import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 
+import java.nio.file.Path;
+
 public class NumberOfLiterals implements IFMAnalysis {
 
     private static final String LABEL = "NumberOfLiterals";
@@ -22,7 +24,7 @@ public class NumberOfLiterals implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) {
         Node cnf = formula.getCNFNode();
         int numberOfLiterals = 0;
         for (Node clause : cnf.getChildren()) {

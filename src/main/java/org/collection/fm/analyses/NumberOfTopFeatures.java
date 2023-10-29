@@ -5,6 +5,8 @@ import org.prop4j.Node;
 import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 
+import java.nio.file.Path;
+
 public class NumberOfTopFeatures implements IFMAnalysis {
 
     private static final String LABEL = "NumberOfTopFeatures";
@@ -20,7 +22,7 @@ public class NumberOfTopFeatures implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) {
         return Integer.toString(featureModel.getStructure().getRoot().getChildrenCount());
     }
 

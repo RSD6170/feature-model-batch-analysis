@@ -28,6 +28,7 @@ public class SatzillaHandler extends FeatureStepHandler{
         public final String parameter;
         public final String[] header;
 
+
         SatzillaTypes(String parameter, String[] header){
             this.parameter = parameter;
             this.header = header;
@@ -53,9 +54,9 @@ public class SatzillaHandler extends FeatureStepHandler{
     }
 
     @Override
-    public FeatureStep evaluateFeatureStep(ExecutorService executorService, IFeatureModel featureModel, FeatureModelFormula formula, Path file) {
+    public FeatureStep evaluateFeatureStep(ExecutorService executorService, IFeatureModel featureModel, FeatureModelFormula formula, Path file, Path solverRelativePath) {
         LocalDateTime before = LocalDateTime.now();
-        BinaryRunner.BinaryResult binaryResult = BinaryRunner.runSolverWithDir(this::getCommand, super.runtimeLimit, formula);
+        BinaryRunner.BinaryResult binaryResult = BinaryRunner.runSolverWithDir(this::getCommand, super.runtimeLimit, formula, solverRelativePath);
 
         try {
             return switch (binaryResult.status) {
@@ -85,9 +86,9 @@ public class SatzillaHandler extends FeatureStepHandler{
         return retValue.stream().map(e -> e.contains("nan") ? "?" : e).toList();
     }
 
-    private String[] getCommand(Path path){
+    private String[] getCommand(Path solverRelativePath, Path path){
         String[] retValue = new String[3];
-        retValue[0] = "solver" + File.separator + "SATZilla_2012" + File.separator + "features";
+        retValue[0] = solverRelativePath.resolve("solver" + File.separator + "SATZilla_2012" + File.separator + "features").toString();
         retValue[1] = satzillaType.parameter;
         retValue[2] = path.toString();
         return retValue;

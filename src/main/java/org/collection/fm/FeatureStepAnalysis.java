@@ -11,6 +11,7 @@ import org.collection.fm.util.FMUtils;
 import org.collection.fm.util.FileUtils;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
 public class FeatureStepAnalysis {
 
     public static void main(String[] args) {
-        AnalysisStepHandler analysis = new AnalysisStepHandler();
+        AnalysisStepHandler analysis = new AnalysisStepHandler(Path.of(""));
 
 
 

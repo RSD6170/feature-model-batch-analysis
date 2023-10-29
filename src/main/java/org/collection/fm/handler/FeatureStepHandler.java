@@ -39,7 +39,7 @@ public class FeatureStepHandler {
     }
 
 
-    public FeatureStep evaluateFeatureStep(ExecutorService executorService, IFeatureModel featureModel, FeatureModelFormula formula, Path file){
+    public FeatureStep evaluateFeatureStep(ExecutorService executorService, IFeatureModel featureModel, FeatureModelFormula formula, Path file, Path solverRelativePath){
         //TODO time-handling, error handling, ...
         LocalDateTime before = LocalDateTime.now();
         ArrayList<String> values = new ArrayList<>();
@@ -47,11 +47,11 @@ public class FeatureStepHandler {
             int timeout = runtimeLimit - (int) Math.ceil(Duration.between(before, LocalDateTime.now()).toMillis() / 1000d);
 
             if (analysis instanceof NumberOfValidConfigurationsLog) {
-                values.add(analysis.getResult(featureModel, formula, timeout)); //Special Handling because of external solver call
+                values.add(analysis.getResult(featureModel, formula, timeout, solverRelativePath)); //Special Handling because of external solver call
                 continue;
             }
 
-            Future<String> result = executorService.submit(() -> analysis.getResult(featureModel, formula, timeout));
+            Future<String> result = executorService.submit(() -> analysis.getResult(featureModel, formula, timeout, solverRelativePath));
             try {
                 values.add(result.get(timeout, TimeUnit.SECONDS));
             } catch (ExecutionException e) {

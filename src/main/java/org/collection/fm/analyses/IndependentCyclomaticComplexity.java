@@ -6,6 +6,8 @@ import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import org.collection.fm.formulagraph.ConnectivityGraph;
 import org.prop4j.Node;
 
+import java.nio.file.Path;
+
 public class IndependentCyclomaticComplexity implements IFMAnalysis {
 
     private static final String LABEL = "IndependentCyclomaticComplexity";
@@ -21,7 +23,7 @@ public class IndependentCyclomaticComplexity implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) {
         ConnectivityGraph graph = new ConnectivityGraph(formula);
         return Integer.toString(graph.getNumberOfIndependentCycles());
     }

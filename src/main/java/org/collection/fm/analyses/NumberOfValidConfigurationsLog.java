@@ -2,7 +2,7 @@ package org.collection.fm.analyses;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,8 +41,8 @@ public class NumberOfValidConfigurationsLog implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout) {
-		BinaryResult result = executeSolver(timeout, formula);
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) {
+		BinaryResult result = executeSolver(timeout, formula, solverRelativePath);
 		if (result.status == Status.TIMEOUT) {
 			return "?";
 		}
@@ -54,12 +54,12 @@ public class NumberOfValidConfigurationsLog implements IFMAnalysis {
 	
 
     
-    public BinaryResult executeSolver(long timeout, FeatureModelFormula formula) {
-		return BinaryRunner.runSolverWithDir(this.buildCommand(), timeout, formula);
+    public BinaryResult executeSolver(long timeout, FeatureModelFormula formula, Path solverRelativePath) {
+		return BinaryRunner.runSolverWithDir(this.buildCommand(), timeout, formula, solverRelativePath);
 	}
     
-    private Function<Path, String[]> buildCommand() {
-		return (dimacsPath -> new String[]{BINARY_PATH,"-i",dimacsPath.toString(),"-m", "counting"});
+    private BiFunction<Path, Path, String[]> buildCommand() {
+		return ((solverRelativePath, dimacsPath) -> new String[]{solverRelativePath.resolve(BINARY_PATH).toString(),"-i",dimacsPath.toString(),"-m", "counting"});
     }
     
 
