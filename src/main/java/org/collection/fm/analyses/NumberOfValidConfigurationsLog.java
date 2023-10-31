@@ -41,7 +41,7 @@ public class NumberOfValidConfigurationsLog implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) throws InterruptedException {
 		BinaryResult result = executeSolver(timeout, formula, solverRelativePath);
 		if (result.status == Status.TIMEOUT) {
 			return "?";
@@ -54,7 +54,7 @@ public class NumberOfValidConfigurationsLog implements IFMAnalysis {
 	
 
     
-    public BinaryResult executeSolver(long timeout, FeatureModelFormula formula, Path solverRelativePath) {
+    public BinaryResult executeSolver(long timeout, FeatureModelFormula formula, Path solverRelativePath) throws InterruptedException {
 		return BinaryRunner.runSolverWithDir(this.buildCommand(), timeout, formula, solverRelativePath);
 	}
     

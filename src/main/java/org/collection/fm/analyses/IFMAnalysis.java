@@ -35,7 +35,7 @@ public interface IFMAnalysis {
      * @param solverRelativePath
      * @return String to be saved in the csv for that model
      */
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath);
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) throws InterruptedException;
 
 
     /**

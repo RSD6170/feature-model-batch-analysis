@@ -95,6 +95,8 @@ public class AnalysisStepHandler {
                         e.getKey().getFeatureStepHandler(-1).getCSVHeader().stream().map( k -> "?").toList(),
                         -1, FeatureStatus.ok);
             }).toList();
+        } catch (InterruptedException e) {
+            return new ArrayList<>();
         }
     }
 
@@ -103,7 +105,13 @@ public class AnalysisStepHandler {
         IFeatureModel featureModel = FMUtils.readFeatureModel(file.getPath());
         if (featureModel == null) return null;
         FeatureModelFormula formula = new FeatureModelFormula(featureModel);
-        return featureSteps.stream().map(e -> e.evaluateFeatureStep(executorService, featureModel, formula, file.toPath(), solverRelativePath)).toList();
+        return featureSteps.stream().map(e -> {
+            try {
+                return e.evaluateFeatureStep(executorService, featureModel, formula, file.toPath(), solverRelativePath);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+        }).toList();
     }
 
     private CSVFormat generateCSVFormatResult(){

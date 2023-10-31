@@ -42,7 +42,7 @@ public class BinaryRunner {
 	}
 
 
-	public static BinaryResult runBinaryStatic(String[] commands, long timeout) {
+	public static BinaryResult runBinaryStatic(String[] commands, long timeout) throws InterruptedException {
 		Process ps = null;
         try {
             ps = new ProcessBuilder(commands).redirectErrorStream(true).start();
@@ -61,9 +61,12 @@ public class BinaryRunner {
                 }
             }
             return new BinaryResult(val.toString(), Status.SOLVED);
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
 			if (ps != null)	killProcesses(ps.toHandle());
             return new BinaryResult("", Status.UNEXPECTED);
+        } catch (InterruptedException e) {
+			if (ps != null)	killProcesses(ps.toHandle());
+            throw new InterruptedException();
         }
     }
 
@@ -72,16 +75,20 @@ public class BinaryRunner {
 		ps.destroy();
 	}
 
-	public static BinaryResult runSolverWithDir(BiFunction<Path, Path, String[]> commands, long timeout, FeatureModelFormula formula, Path solverRelativePath){
+	public static BinaryResult runSolverWithDir(BiFunction<Path, Path, String[]> commands, long timeout, FeatureModelFormula formula, Path solverRelativePath) throws InterruptedException {
+		Path dir = null;
 		try {
-			Path dir = createTemporaryDimacs(formula);
+			dir = createTemporaryDimacs(formula);
 			BinaryResult result = runBinaryStatic(commands.apply(solverRelativePath, dir.resolve(TEMPORARY_DIMACS_PATH)), timeout);
 			cleanUpTemp(dir);
 			return result;
 		} catch (IOException e) {
 			return new BinaryResult("", Status.UNEXPECTED);
-		}
-	}
+		} catch (InterruptedException e) {
+			if (dir != null) cleanUpTemp(dir);
+			throw new InterruptedException();
+        }
+    }
 
 	private static Path createTemporaryDimacs(FeatureModelFormula formula) throws IOException {
 		Path tempDir = Files.createTempDirectory("sat");

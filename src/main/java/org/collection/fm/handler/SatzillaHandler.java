@@ -54,7 +54,7 @@ public class SatzillaHandler extends FeatureStepHandler{
     }
 
     @Override
-    public FeatureStep evaluateFeatureStep(ExecutorService executorService, IFeatureModel featureModel, FeatureModelFormula formula, Path file, Path solverRelativePath) {
+    public FeatureStep evaluateFeatureStep(ExecutorService executorService, IFeatureModel featureModel, FeatureModelFormula formula, Path file, Path solverRelativePath) throws InterruptedException {
         LocalDateTime before = LocalDateTime.now();
         BinaryRunner.BinaryResult binaryResult = BinaryRunner.runSolverWithDir(this::getCommand, super.runtimeLimit, formula, solverRelativePath);
 

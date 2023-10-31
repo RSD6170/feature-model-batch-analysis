@@ -39,7 +39,7 @@ public class FeatureStepHandler {
     }
 
 
-    public FeatureStep evaluateFeatureStep(ExecutorService executorService, IFeatureModel featureModel, FeatureModelFormula formula, Path file, Path solverRelativePath){
+    public FeatureStep evaluateFeatureStep(ExecutorService executorService, IFeatureModel featureModel, FeatureModelFormula formula, Path file, Path solverRelativePath) throws InterruptedException {
         //TODO time-handling, error handling, ...
         LocalDateTime before = LocalDateTime.now();
         ArrayList<String> values = new ArrayList<>();
