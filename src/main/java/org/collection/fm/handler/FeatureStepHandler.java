@@ -44,6 +44,7 @@ public class FeatureStepHandler {
         LocalDateTime before = LocalDateTime.now();
         ArrayList<String> values = new ArrayList<>();
         for (IFMAnalysis analysis : featureAnalyses) {
+            if (Thread.currentThread().isInterrupted()) break;
             int timeout = runtimeLimit - (int) Math.ceil(Duration.between(before, LocalDateTime.now()).toMillis() / 1000d);
 
             if (analysis instanceof NumberOfValidConfigurationsLog) {
