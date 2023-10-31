@@ -43,8 +43,9 @@ public class BinaryRunner {
 
 
 	public static BinaryResult runBinaryStatic(String[] commands, long timeout) {
+		Process ps = null;
         try {
-            final Process ps = new ProcessBuilder(commands).redirectErrorStream(true).start();
+            ps = new ProcessBuilder(commands).redirectErrorStream(true).start();
             long pid = ps.pid();
             if (!ps.waitFor(timeout, TimeUnit.SECONDS)) {
                 killProcesses(ps.toHandle());
@@ -61,6 +62,7 @@ public class BinaryRunner {
             }
             return new BinaryResult(val.toString(), Status.SOLVED);
         } catch (IOException | InterruptedException e) {
+			if (ps != null)	killProcesses(ps.toHandle());
             return new BinaryResult("", Status.UNEXPECTED);
         }
     }
