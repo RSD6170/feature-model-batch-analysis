@@ -83,7 +83,12 @@ public class AnalysisStepHandler {
             IFeatureModel featureModel = FMUtils.readFeatureModel(file.getPath());
             if (featureModel == null) return null;
             FeatureModelFormula formula = new FeatureModelFormula(featureModel);
-            Queue<FeatureStep> featureStepQueue = featureSteps.stream().map(e -> e.evaluateFeatureStep(executorService, featureModel, formula, file.toPath(), solverRelativePath)).collect(Collectors.toCollection(LinkedList::new));
+            Queue<FeatureStep> featureStepQueue = new LinkedList<>();
+            for (FeatureStepHandler featureStep : featureSteps) {
+                if (Thread.currentThread().isInterrupted()) return new ArrayList<>();
+                FeatureStep step = featureStep.evaluateFeatureStep(executorService, featureModel, formula, file.toPath(), solverRelativePath);
+                featureStepQueue.add(step);
+            }
             return activeSteps.entrySet().stream().map( e -> {
                 if (e.getValue()) return featureStepQueue.poll();
                 else return new FeatureStep(file.toPath(),
