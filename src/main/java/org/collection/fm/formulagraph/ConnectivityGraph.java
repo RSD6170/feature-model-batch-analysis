@@ -27,6 +27,7 @@ public class ConnectivityGraph {
     private void initializeGraph(FeatureModelFormula formula) {
         Node cnf = formula.getCNFNode(); 
         for (Node clause : cnf.getChildren()) {
+            if (Thread.currentThread().isInterrupted()) break;
             handleClause(clause);
         }
     }
@@ -59,6 +60,7 @@ public class ConnectivityGraph {
     public int getNumberOfEdges() {
         int edges = 0;
         for (Vertex vertex : vertices.values()) {
+            if (Thread.currentThread().isInterrupted()) return -1;
             edges += vertex.getNumberOfNeighbors();
         }
 
