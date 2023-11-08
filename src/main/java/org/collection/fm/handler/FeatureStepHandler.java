@@ -60,7 +60,7 @@ public class FeatureStepHandler {
             } catch (InterruptedException | TimeoutException e) {
                 result.cancel(true);
                 System.out.println(analysis.getLabel() + " ran out of time!");
-                return new FeatureStep(file, Collections.nCopies(featureAnalyses.size(), "?"), runtimeLimit, FeatureStatus.timeout);
+                throw new InterruptedException();
             }
         }
         double runtime = Duration.between(before, LocalDateTime.now()).toMillis() / 1000d;
