@@ -1,6 +1,7 @@
 package org.collection.fm.handler;
 
 import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
+import de.ovgu.featureide.fm.core.analysis.cnf.solver.RuntimeTimeoutException;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import org.collection.fm.analyses.IFMAnalysis;
 import org.collection.fm.analyses.NumberOfValidConfigurationsLog;
@@ -57,10 +58,14 @@ public class FeatureStepHandler {
                 values.add(result.get(timeout, TimeUnit.SECONDS));
             } catch (ExecutionException e) {
                 return new FeatureStep(file, Collections.nCopies(featureAnalyses.size(), "?"), runtimeLimit, FeatureStatus.crash);
-            } catch (InterruptedException | TimeoutException e) {
+            } catch (InterruptedException e) {
+                result.cancel(true);
+                System.out.println(analysis.getLabel() + " interrupted!");
+                throw new InterruptedException();
+            } catch (TimeoutException | RuntimeTimeoutException e) {
                 result.cancel(true);
                 System.out.println(analysis.getLabel() + " ran out of time!");
-                throw new InterruptedException();
+                return new FeatureStep(file, Collections.nCopies(featureAnalyses.size(), "?"), runtimeLimit, FeatureStatus.timeout);
             }
         }
         double runtime = Duration.between(before, LocalDateTime.now()).toMillis() / 1000d;
