@@ -78,7 +78,7 @@ public class AnalysisStepHandler {
      * @param file File to analyse
      * @return List of analysis results as {@link FeatureStep}s
      */
-    public List<FeatureStep> getSingleAnalysis(File file) {
+    public List<FeatureStep> getSingleAnalysis(File file) throws InterruptedException {
         try(ExecutorService executorService = Executors.newSingleThreadExecutor()){
             IFeatureModel featureModel = FMUtils.readFeatureModel(file.getPath());
             if (featureModel == null) return null;
@@ -95,8 +95,6 @@ public class AnalysisStepHandler {
                         e.getKey().getFeatureStepHandler(-1).getCSVHeader().stream().map( k -> "?").toList(),
                         -1, FeatureStatus.ok);
             }).toList();
-        } catch (InterruptedException e) {
-            return new ArrayList<>();
         }
     }
 
