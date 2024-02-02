@@ -91,7 +91,7 @@ public class AnalysisStepHandler {
             }
             return activeSteps.entrySet().stream().map( e -> {
                 if (e.getValue()) return featureStepQueue.poll();
-                else return new FeatureStep(file.toPath(),
+                else return new FeatureStep(e.getKey().getName(), file.toPath(),
                         e.getKey().getFeatureStepHandler(-1).getCSVHeader().stream().map( k -> "?").toList(),
                         -1, FeatureStatus.ok);
             }).toList();

@@ -63,18 +63,18 @@ public class SatzillaHandler extends FeatureStepHandler{
                 case SOLVED -> {
                     Optional<String> lastLine = binaryResult.stdout.lines().reduce((first, second) -> second);
                     List<String> results = parseSatzillaOutput(lastLine.orElseThrow());
-                    yield new FeatureStep(file, results, Duration.between(before, LocalDateTime.now()).toMillis() / 1000d, FeatureStatus.ok);
+                    yield new FeatureStep(name, file, results, Duration.between(before, LocalDateTime.now()).toMillis() / 1000d, FeatureStatus.ok);
                 }
-                case MEMORY_LIMIT_REACHED -> new FeatureStep(file, Collections.nCopies(satzillaType.header.length, "?"), super.runtimeLimit, FeatureStatus.memout);
+                case MEMORY_LIMIT_REACHED -> new FeatureStep(name, file, Collections.nCopies(satzillaType.header.length, "?"), super.runtimeLimit, FeatureStatus.memout);
                 case TIMEOUT -> {
                     System.out.println("Timeout in Satzilla "+ satzillaType);
-                    yield new FeatureStep(file, Collections.nCopies(satzillaType.header.length, "?"), super.runtimeLimit, FeatureStatus.timeout);
+                    yield new FeatureStep(name, file, Collections.nCopies(satzillaType.header.length, "?"), super.runtimeLimit, FeatureStatus.timeout);
                 }
                 case UNEXPECTED -> throw new Exception();
             };
         }catch (Exception e){
             System.out.println("Error in Satzilla "+ satzillaType);
-            return new FeatureStep(file, Collections.nCopies(satzillaType.header.length, "?"), super.runtimeLimit, FeatureStatus.crash);
+            return new FeatureStep(name, file, Collections.nCopies(satzillaType.header.length, "?"), super.runtimeLimit, FeatureStatus.crash);
         }
     }
 

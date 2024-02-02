@@ -9,22 +9,32 @@ import java.util.NoSuchElementException;
 
 public enum AnalysisStepsEnum {
 
-    FeatureBasic,
-    FeatureConstraints,
-    FeatureTree,
-    FeatureClause,
-    FeatureDense,
-    FeatureCore,
-    FeatureValid,
-    FeatureCyclo,
-    SatzillaBASE,
-    SatzillaSP,
-    SatzillaDIA,
-    SatzillaCL,
-    SatzillaUNIT,
-    SatzillaLS,
-    SatzillaLOBJOIS,
-    SatzillaLP;
+    FeatureBasic("Feature-basic"),
+    FeatureConstraints("Feature-constraints"),
+    FeatureTree("Feature-tree"),
+    FeatureClause("Feature-clause"),
+    FeatureDense("Feature-dense"),
+    FeatureCore("Feature-core"),
+    FeatureValid("Feature-valid"),
+    FeatureCyclo("Feature-cyclo"),
+    SatzillaBASE("Satzilla-BASE"),
+    SatzillaSP("Satzilla-SP"),
+    SatzillaDIA("Satzilla-DIA"),
+    SatzillaCL("Satzilla-CL"),
+    SatzillaUNIT("Satzilla-UNIT"),
+    SatzillaLS("Satzilla-LS"),
+    SatzillaLOBJOIS("Satzilla-LOBJOIS"),
+    SatzillaLP("Satzilla-LP");
+
+    private final String name;
+
+    public String getName(){
+        return name;
+    }
+
+    AnalysisStepsEnum(String name){
+        this.name = name;
+    }
 
     public static AnalysisStepsEnum getIgnoreCase(String string) throws NoSuchElementException {
         return Arrays.stream(AnalysisStepsEnum.values()).filter(e -> e.toString().equalsIgnoreCase(string)).findFirst().orElse(null);
@@ -33,14 +43,14 @@ public enum AnalysisStepsEnum {
     public FeatureStepHandler getFeatureStepHandler(int timeout) {
         return switch (this) {
             case FeatureBasic -> {
-                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, "Feature-basic");
+                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
                 featureStepHandler.addAnalysis(new NumberOfFeatures());
                 featureStepHandler.addAnalysis(new NumberOfLeafFeatures());
                 featureStepHandler.addAnalysis(new NumberOfTopFeatures());
                 yield featureStepHandler;
             }
             case FeatureConstraints -> {
-                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, "Feature-constraints");
+                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
                 featureStepHandler.addAnalysis(new NumberOfConstraints());
                 featureStepHandler.addAnalysis(new AverageConstraintSize());
                 featureStepHandler.addAnalysis(new CtcDensity());
@@ -48,25 +58,25 @@ public enum AnalysisStepsEnum {
                 yield featureStepHandler;
             }
             case FeatureTree -> {
-                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, "Feature-tree");
+                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
                 featureStepHandler.addAnalysis(new TreeDepth());
                 featureStepHandler.addAnalysis(new AverageNumberOfChilden());
                 yield featureStepHandler;
             }
             case FeatureClause -> {
-                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, "Feature-clause");
+                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
                 featureStepHandler.addAnalysis(new NumberOfClauses());
                 featureStepHandler.addAnalysis(new NumberOfLiterals());
                 featureStepHandler.addAnalysis(new ClauseDensity());
                 yield featureStepHandler;
             }
             case FeatureDense -> {
-                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, "Feature-dense");
+                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
                 featureStepHandler.addAnalysis(new ConnectivityDensity());
                 yield featureStepHandler;
             }
             case FeatureCore -> {
-                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, "Feature-core");
+                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
                 featureStepHandler.addAnalysis(new VoidModel());
 
                 AnalysisCacher analysisCacher = new AnalysisCacher();
@@ -77,12 +87,12 @@ public enum AnalysisStepsEnum {
                 yield featureStepHandler;
             }
             case FeatureValid -> {
-                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, "Feature-valid");
+                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
                 featureStepHandler.addAnalysis(new NumberOfValidConfigurationsLog());
                 yield featureStepHandler;
             }
             case FeatureCyclo -> {
-                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, "Feature-cyclo");
+                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
                 featureStepHandler.addAnalysis(new SimpleCyclomaticComplexity());
                 featureStepHandler.addAnalysis(new IndependentCyclomaticComplexity());
                 yield featureStepHandler;

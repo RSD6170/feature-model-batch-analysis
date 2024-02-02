@@ -27,7 +27,7 @@ dependencies {
 group = 'org.collection.fm'
 version = '1.0-SNAPSHOT'
 description = 'batchanalysis'
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_21
 
 application {
     mainClass = 'org.collection.fm.FeatureStepAnalysis'

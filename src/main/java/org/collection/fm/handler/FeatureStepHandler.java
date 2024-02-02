@@ -57,7 +57,7 @@ public class FeatureStepHandler {
             try {
                 values.add(result.get(timeout, TimeUnit.SECONDS));
             } catch (ExecutionException e) {
-                return new FeatureStep(file, Collections.nCopies(featureAnalyses.size(), "?"), runtimeLimit, FeatureStatus.crash);
+                return new FeatureStep(name, file, Collections.nCopies(featureAnalyses.size(), "?"), runtimeLimit, FeatureStatus.crash);
             } catch (InterruptedException e) {
                 result.cancel(true);
                 System.out.println(analysis.getLabel() + " interrupted!");
@@ -65,11 +65,11 @@ public class FeatureStepHandler {
             } catch (TimeoutException | RuntimeTimeoutException e) {
                 result.cancel(true);
                 System.out.println(analysis.getLabel() + " ran out of time!");
-                return new FeatureStep(file, Collections.nCopies(featureAnalyses.size(), "?"), runtimeLimit, FeatureStatus.timeout);
+                return new FeatureStep(name, file, Collections.nCopies(featureAnalyses.size(), "?"), runtimeLimit, FeatureStatus.timeout);
             }
         }
         double runtime = Duration.between(before, LocalDateTime.now()).toMillis() / 1000d;
-        return new FeatureStep(file, values, runtime, FeatureStatus.ok);
+        return new FeatureStep(name, file, values, runtime, FeatureStatus.ok);
     }
 
 
