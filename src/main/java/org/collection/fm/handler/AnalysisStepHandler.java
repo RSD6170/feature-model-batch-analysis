@@ -93,7 +93,7 @@ public class AnalysisStepHandler {
                 if (e.getValue()) return featureStepQueue.poll();
                 else return new FeatureStep(e.getKey().getName(), file.toPath(),
                         e.getKey().getFeatureStepHandler(-1).getCSVHeader().stream().map( k -> "?").toList(),
-                        -1, FeatureStatus.ok);
+                        -1, FeatureStatus.other);
             }).toList();
         }
     }
