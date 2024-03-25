@@ -1,9 +1,6 @@
 package org.collection.fm.formulagraph;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
-import java.util.Vector;
+import java.util.*;
 
 import org.prop4j.Node;
 import org.prop4j.Or;
@@ -30,6 +27,7 @@ public class ConnectivityGraph {
     private void initializeGraph(FeatureModelFormula formula) {
         Node cnf = formula.getCNFNode(); 
         for (Node clause : cnf.getChildren()) {
+            if (Thread.currentThread().isInterrupted()) break;
             handleClause(clause);
         }
     }
@@ -62,6 +60,7 @@ public class ConnectivityGraph {
     public int getNumberOfEdges() {
         int edges = 0;
         for (Vertex vertex : vertices.values()) {
+            if (Thread.currentThread().isInterrupted()) return -1;
             edges += vertex.getNumberOfNeighbors();
         }
 
@@ -71,13 +70,14 @@ public class ConnectivityGraph {
     // performs a dfs to compute the number of cycles
     public int getNumberOfCycles() {
         int cycleCounter = 0;
-        Stack<String> stack = new Stack<>();
+        Deque<String> stack = new ArrayDeque<>();
         String start =  vertices.values().iterator().next().getVariable();
         stack.push(start);
-        while (!stack.isEmpty()) {
+        while (!stack.isEmpty() && !Thread.currentThread().isInterrupted()) {
             Vertex current = getVertex(stack.pop());
             current.setVisited(true);
             for (String dest : current.getAdjacencyList()) {
+                if (Thread.currentThread().isInterrupted()) break;
                 Vertex destV = getVertex(dest);
                 if (stack.contains(dest) && !destV.isVisited()) { // cycle found
                     cycleCounter++;
@@ -92,24 +92,25 @@ public class ConnectivityGraph {
     // computes the number of independent cycles
     // i.e. the vertices in each cycle are not a subset of another one
     public int getNumberOfIndependentCycles() {
-        Stack<String> stack = new Stack<>();
+        Deque<String> stack = new ArrayDeque<>();
         String start =  vertices.values().iterator().next().getVariable();
-        Vector<Vector<String>> cycleLog = new Vector<>();
+        List<List<String>> cycleLog = new ArrayList<>();
         stack.push(start);
 
         // key: child, value: parent
         HashMap<String, String> parentMapping = new HashMap<>();
         parentMapping.put(start, null);
-        while (!stack.isEmpty()) {
+        while (!stack.isEmpty() && !Thread.currentThread().isInterrupted()) {
             String current = stack.pop();
             Vertex currentV = getVertex(current);
             currentV.setVisited(true);
             for (String dest : currentV.getAdjacencyList()) {
+                if (Thread.currentThread().isInterrupted()) return -1;
                 parentMapping.put(dest, current);
                 Vertex destV = getVertex(dest);
                 if (stack.contains(dest) && !destV.isVisited()) { // cycle found
                     // get the path beginning at the root of the dfs
-                    Vector<String> pathLog = new Vector<>();
+                    List<String> pathLog = new ArrayList<>();
                     pathLog.add(dest);
                     String next = current;
                     while (next != null && !pathLog.contains(next)) {
@@ -119,14 +120,17 @@ public class ConnectivityGraph {
 
                     // check for not independent cycles before inserting
                     boolean independent = true;
-                    for(Vector<String> elem :  cycleLog) {
+                    HashSet<String> pathLogSet = new HashSet<>(pathLog);
+                    for(List<String> elemList :  cycleLog) {
+                        if (Thread.currentThread().isInterrupted()) return -1;
+                        HashSet<String> elem = new HashSet<>(elemList);
                         if (elem.size() >= pathLog.size()) {
                             if (elem.containsAll(pathLog)) {
                                 independent = false;
                                 break;
                             }
                         } else {
-                            if (pathLog.containsAll(elem)) {
+                            if (pathLogSet.containsAll(elem)) {
                                 independent = false;
                                 break;
                             }

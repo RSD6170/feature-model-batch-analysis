@@ -1,5 +1,6 @@
 package org.collection.fm.analyses;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +26,7 @@ public class TreeDepth implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) {
         return Integer.toString(getTreeDepthRecursive(featureModel.getStructure().getRoot()));
     }
     
@@ -36,6 +37,7 @@ public class TreeDepth implements IFMAnalysis {
 			return 1; // decide whether 0 or 1 is correct
 		}
 		for(IFeatureStructure child : structure.getChildren()) {
+            if (Thread.currentThread().isInterrupted()) break;
 			depthOfChildren.add(getTreeDepthRecursive(child));
 		}
 		return Collections.max(depthOfChildren) + 1;

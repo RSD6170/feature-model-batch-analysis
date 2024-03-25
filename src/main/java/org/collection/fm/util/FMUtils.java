@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import de.ovgu.featureide.fm.core.analysis.cnf.analysis.HasSolutionAnalysis;
 import org.prop4j.Node;
 
 import de.ovgu.featureide.fm.attributes.FMAttributesLibrary;
@@ -29,7 +30,9 @@ public class FMUtils {
 		IFeatureModel featureModel = null;
 		try {
 			featureModel = FeatureModelManager.load(Paths.get(path));
-		} catch (Exception e) {}
+		} catch (Exception ignored) {
+			//ignored
+		}
 		return featureModel;
 	}
 	
@@ -43,10 +46,14 @@ public class FMUtils {
 	}
 
 	public static void saveCNF(FeatureModelFormula formula, String path) {
+		String dimacsContent = getDimacsContent(formula);
+		FileUtils.writeContentToFile(path.replaceFirst("[.][^.]+$", "") + ".dimacs", dimacsContent);
+	}
+
+	public static String getDimacsContent(FeatureModelFormula formula) {
 		// clear if one exists
 		final DimacsWriter dWriter = new DimacsWriter(formula.getCNF());
-		final String dimacsContent = dWriter.write();
-		FileUtils.writeContentToFile(path.replaceFirst("[.][^.]+$", "") + ".dimacs", dimacsContent);
+		return dWriter.write();
 	}
 	
 
@@ -74,20 +81,22 @@ public class FMUtils {
 		return coreAncestors;
 	}
 
-	public static boolean isVoid(FeatureModelFormula formula) {
-		return formula.getAnalyzer().isValid(new NullMonitor<Boolean>());
+	public static boolean isVoid(FeatureModelFormula formula, int timeout) throws Exception {
+		HasSolutionAnalysis analysis = new HasSolutionAnalysis(formula.getCNF());
+		analysis.setTimeout(1000*timeout);
+		return analysis.execute(new NullMonitor<>());
 	}
 	
 	public static Set<IFeature> getCoreFeatures(FeatureModelFormula formula) {
-		return new HashSet<>(formula.getAnalyzer().getCoreFeatures(new NullMonitor<LiteralSet>()));
+		return new HashSet<>(formula.getAnalyzer().getCoreFeatures(new NullMonitor<>()));
 	}
 	
 	public static Set<IFeature> getDeadFeatures(FeatureModelFormula formula) {
-		return new HashSet<>(formula.getAnalyzer().getDeadFeatures(new NullMonitor<LiteralSet>()));
+		return new HashSet<>(formula.getAnalyzer().getDeadFeatures(new NullMonitor<>()));
 	}
 	
 	public static Set<IFeature> getFalseOptionalFeatures(FeatureModelFormula formula) {
-		return new HashSet<>(formula.getAnalyzer().getFalseOptionalFeatures(new NullMonitor<List<LiteralSet>>()));
+		return new HashSet<>(formula.getAnalyzer().getFalseOptionalFeatures(new NullMonitor<>()));
 	}
 	
 	public static IFeature getParent(IFeature feat) {

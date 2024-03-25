@@ -1,5 +1,6 @@
 package org.collection.fm.analyses;
 
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,13 +27,14 @@ public class FeaturesInConstraintsDensity implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) {
 		int numberOfFeatures = featureModel.getNumberOfFeatures();
 		
 		List<IConstraint> constraints = featureModel.getConstraints();
 		
 		Set<IFeature> appearingFeatures = new HashSet<>();
 		for (IConstraint constraint : constraints) {
+            if (Thread.currentThread().isInterrupted()) break;
 			appearingFeatures.addAll(constraint.getContainedFeatures());
 		}
 		

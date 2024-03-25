@@ -1,14 +1,21 @@
 package org.collection.fm.analyses;
 
-import org.collection.fm.util.FMUtils;
+import org.collection.fm.util.AnalysisCacher;
 import org.prop4j.Node;
 
 import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 
+import java.nio.file.Path;
+
 public class NumberOfCoreFeatures implements IFMAnalysis  {
 
-    private static final String LABEL = "#CORE";
+    private static final String LABEL = "Number_CORE";
+    private final AnalysisCacher analysisCacher;
+
+    public NumberOfCoreFeatures(AnalysisCacher analysisCacher) {
+        this.analysisCacher = analysisCacher;
+    }
 
     @Override
     public String getLabel() {
@@ -21,8 +28,14 @@ public class NumberOfCoreFeatures implements IFMAnalysis  {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
-        return String.valueOf(FMUtils.getCoreFeatures(formula).size());
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) {
+        try {
+            return String.valueOf(analysisCacher.getCoreFeatureNumber(formula, timeout));
+        } catch (Exception e) {
+            System.out.println("NumberOfCoreFeatures just crashed!");
+            e.printStackTrace();
+            return "?";
+        }
     }
 
     @Override

@@ -6,6 +6,8 @@ import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 
+import java.nio.file.Path;
+
 public class AverageNumberOfChilden implements IFMAnalysis {
 
     private static final String LABEL = "AverageNumberOfChildren";
@@ -21,10 +23,11 @@ public class AverageNumberOfChilden implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) {
 		int childrenCount = 0;
 		int numberOfNonLeafFeatures = 0;
 		for (IFeature feature : featureModel.getFeatures()) {
+			if (Thread.currentThread().isInterrupted()) break;
 			int numberOfChildren = feature.getStructure().getChildrenCount();
 			if (numberOfChildren != 0) {
 				numberOfNonLeafFeatures++;

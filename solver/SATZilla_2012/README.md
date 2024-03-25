@@ -1,0 +1,1 @@
+[SATZilla](https://www.cs.ubc.ca/labs/algorithms/Projects/SATzilla/) 2012 Feature Extractor, taken from [here](http://www.cs.ubc.ca/labs/beta/Projects/SATzilla/SAT-feature-code-2012.tar.gz)

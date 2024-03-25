@@ -5,6 +5,8 @@ import org.prop4j.Node;
 import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 
+import java.nio.file.Path;
+
 public class CtcDensity implements IFMAnalysis {
 
     private static final String LABEL = "CtcDensity";
@@ -20,7 +22,7 @@ public class CtcDensity implements IFMAnalysis {
     }
 
     @Override
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula) {
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) {
         return Double.toString( (double) featureModel.getConstraintCount() / featureModel.getNumberOfFeatures());
     }
 

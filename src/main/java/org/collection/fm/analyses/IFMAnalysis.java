@@ -5,7 +5,10 @@ import org.prop4j.Node;
 import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 
+import java.nio.file.Path;
+
 public interface IFMAnalysis {
+
 
     enum Format {
         FEATURE_MODEL, CNF
@@ -25,10 +28,14 @@ public interface IFMAnalysis {
 
     /**
      * Computes result of the analyis for a given feature model
+     *
      * @param featureModel
+     * @param formula
+     * @param timeout            timeout
+     * @param solverRelativePath
      * @return String to be saved in the csv for that model
      */
-    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula);
+    public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) throws InterruptedException;
 
 
     /**
@@ -44,5 +51,9 @@ public interface IFMAnalysis {
      * @return
      */
     public boolean supportsFormat(Format format);
+
+    public default int getMaxRuntime() {
+        return 30;
+    }
 
 }
