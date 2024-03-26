@@ -1,5 +1,6 @@
 package org.collection.fm.util;
 
+import de.ovgu.featureide.fm.core.FeatureModelAnalyzer;
 import de.ovgu.featureide.fm.core.analysis.cnf.LiteralSet;
 import de.ovgu.featureide.fm.core.analysis.cnf.analysis.CoreDeadAnalysis;
 import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
@@ -11,6 +12,7 @@ import java.util.Objects;
 public class AnalysisCacher {
 
     private FeatureModelFormula formula;
+    private FeatureModelAnalyzer featureIDEAnalyzer;
 
     private List<String> coreFeatures;
     private List<String> deadFeatures;
@@ -25,11 +27,19 @@ public class AnalysisCacher {
         return deadFeatures.size();
     }
 
+    public FeatureModelAnalyzer getAnalyzer(FeatureModelFormula formula) {
+        if (!formula.equals(this.formula)) {
+            this.formula = formula;
+            featureIDEAnalyzer = new FeatureModelAnalyzer(formula);
+        }
+        return featureIDEAnalyzer;
+    }
+
 
     private void generateResults(FeatureModelFormula formula, int timeout) throws Exception {
         if (!formula.equals(this.formula) || Objects.isNull(coreFeatures) || Objects.isNull(deadFeatures)){
             this.formula = formula;
-
+            featureIDEAnalyzer = new FeatureModelAnalyzer(formula);
             CoreDeadAnalysis coreDeadAnalysis = new CoreDeadAnalysis(formula.getCNF());
             coreDeadAnalysis.setTimeout(1000*timeout);
             LiteralSet result = coreDeadAnalysis.execute(new NullMonitor<>());
