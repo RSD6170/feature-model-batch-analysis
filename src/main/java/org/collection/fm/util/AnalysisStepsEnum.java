@@ -13,6 +13,7 @@ public enum AnalysisStepsEnum {
     FeatureConstraints("Feature-constraints"),
     FeatureTree("Feature-tree"),
     FeatureClause("Feature-clause"),
+    FeatureConstraintRedundancy("Feature-clause-redundancy"),
     FeatureDense("Feature-dense"),
     FeatureCore("Feature-core"),
     FeatureValid("Feature-valid"),
@@ -41,6 +42,7 @@ public enum AnalysisStepsEnum {
     }
 
     public FeatureStepHandler getFeatureStepHandler(int timeout) {
+        AnalysisCacher analysisCacher = new AnalysisCacher();
         return switch (this) {
             case FeatureBasic -> {
                 FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
@@ -55,6 +57,12 @@ public enum AnalysisStepsEnum {
                 featureStepHandler.addAnalysis(new AverageConstraintSize());
                 featureStepHandler.addAnalysis(new CtcDensity());
                 featureStepHandler.addAnalysis(new FeaturesInConstraintsDensity());
+                yield featureStepHandler;
+            }
+            case FeatureConstraintRedundancy -> {
+                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
+                featureStepHandler.addAnalysis(new NumberOfTautologies(analysisCacher));
+                featureStepHandler.addAnalysis(new NumberOfRedundantConstraints(analysisCacher));
                 yield featureStepHandler;
             }
             case FeatureTree -> {
@@ -78,12 +86,10 @@ public enum AnalysisStepsEnum {
             case FeatureCore -> {
                 FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
                 featureStepHandler.addAnalysis(new VoidModel());
-
-                AnalysisCacher analysisCacher = new AnalysisCacher();
-
                 featureStepHandler.addAnalysis(new NumberOfCoreFeatures(analysisCacher));
                 featureStepHandler.addAnalysis(new NumberOfDeadFeatures(analysisCacher));
                 featureStepHandler.addAnalysis(new RatioOfOptionalFeatures(analysisCacher));
+                featureStepHandler.addAnalysis(new NumberOfFalseOptionalFeatures(analysisCacher));
                 yield featureStepHandler;
             }
             case FeatureValid -> {
