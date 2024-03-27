@@ -50,14 +50,12 @@ public class NumberOfFalseOptionalFeatures implements IFMAnalysis {
 
     @Override
     public String getResult(Node node) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getResult'");
+        return null;
     }
 
     @Override
     public boolean supportsFormat(Format format) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'supportsFormat'");
+        return true;
     }
 
 }

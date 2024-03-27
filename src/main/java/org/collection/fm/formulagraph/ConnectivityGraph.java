@@ -38,6 +38,7 @@ public class ConnectivityGraph {
         }
         if (!(set instanceof Or)) {
             System.out.println("Not CNF");
+            return;
         }
         for (int i = 0; i < set.getChildren().length - 1; i++) {
             for (int j = i+1; j < set.getChildren().length; j++) {
