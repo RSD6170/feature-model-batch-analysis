@@ -69,12 +69,16 @@ public enum AnalysisStepsEnum {
                 FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
                 featureStepHandler.addAnalysis(new TreeDepth());
                 featureStepHandler.addAnalysis(new AverageNumberOfChilden());
+                featureStepHandler.addAnalysis(new NumberOfAlternatives());
+                featureStepHandler.addAnalysis(new NumberOfOrs());
                 yield featureStepHandler;
             }
             case FeatureClause -> {
                 FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
                 featureStepHandler.addAnalysis(new NumberOfClauses());
                 featureStepHandler.addAnalysis(new NumberOfLiterals());
+                featureStepHandler.addAnalysis(new NumberOfUnitClauses());
+                featureStepHandler.addAnalysis(new NumberOfTwoClauses());
                 featureStepHandler.addAnalysis(new ClauseDensity());
                 yield featureStepHandler;
             }
@@ -90,6 +94,7 @@ public enum AnalysisStepsEnum {
                 featureStepHandler.addAnalysis(new NumberOfDeadFeatures(analysisCacher));
                 featureStepHandler.addAnalysis(new RatioOfOptionalFeatures(analysisCacher));
                 featureStepHandler.addAnalysis(new NumberOfFalseOptionalFeatures(analysisCacher));
+                featureStepHandler.addAnalysis(new NumberOfOptionalFeatures(analysisCacher));
                 yield featureStepHandler;
             }
             case FeatureValid -> {

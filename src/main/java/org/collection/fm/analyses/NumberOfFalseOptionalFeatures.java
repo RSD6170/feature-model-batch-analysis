@@ -38,7 +38,6 @@ public class NumberOfFalseOptionalFeatures implements IFMAnalysis {
         FeatureModelAnalyzer analyzer = analysisCacher.getAnalyzer(formula);
         try {
             List<IFeature> features = analyzer.getFalseOptionalFeatures(new NullMonitor<>());
-            System.out.println(features);
             return String.valueOf(features.size());
         } catch (Exception e) {
             System.out.println(LABEL + " just crashed!");
