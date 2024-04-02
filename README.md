@@ -6,9 +6,10 @@ As input a path to either a directory or a feature-model file is expected. If gi
 Only tested with Ubuntu 22.04LTS, binaries have to be recompiled!
 
 Call FeatureStepAnalysis with 
- - Mandatory argument([0]): Input path
- - Optional Argument([1]): Output path results
- - Optional Argument([2]): Output path time
- - Optional Argument([3]): Output path runstatus
+    Mandatory argument([0]): Input path
+    Optional Argument([1]): Analysis category: All (chosen if not set), Default, Simple, CNF, Satzilla
+    Optional Argument([2]): Output path results
+    Optional Argument([3]): Output path time
+    Optional Argument([4]): Output path runstatus
 
 to execute all analysis on all files in the given path recursively.
