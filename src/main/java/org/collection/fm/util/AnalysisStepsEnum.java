@@ -5,40 +5,49 @@ import org.collection.fm.handler.FeatureStepHandler;
 import org.collection.fm.handler.SatzillaHandler;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public enum AnalysisStepsEnum {
 
-    FeatureBasic("Feature-basic"),
-    FeatureConstraints("Feature-constraints"),
-    FeatureTree("Feature-tree"),
-    FeatureClause("Feature-clause"),
-    FeatureConstraintRedundancy("Feature-clause-redundancy"),
-    FeatureDense("Feature-dense"),
-    FeatureCore("Feature-core"),
-    FeatureValid("Feature-valid"),
-    FeatureCyclo("Feature-cyclo"),
-    SatzillaBASE("Satzilla-BASE"),
-    SatzillaSP("Satzilla-SP"),
-    SatzillaDIA("Satzilla-DIA"),
-    SatzillaCL("Satzilla-CL"),
-    SatzillaUNIT("Satzilla-UNIT"),
-    SatzillaLS("Satzilla-LS"),
-    SatzillaLOBJOIS("Satzilla-LOBJOIS"),
-    SatzillaLP("Satzilla-LP");
+    FeatureBasic("Feature-basic", List.of(AnalysisCategory.All, AnalysisCategory.Default, AnalysisCategory.Simple)),
+    FeatureConstraints("Feature-constraints",
+            List.of(AnalysisCategory.All, AnalysisCategory.Default, AnalysisCategory.Simple)),
+    FeatureTree("Feature-tree", List.of(AnalysisCategory.All, AnalysisCategory.Default, AnalysisCategory.Simple)),
+    FeatureClause("Feature-clause", List.of(AnalysisCategory.All, AnalysisCategory.Default, AnalysisCategory.CNF)),
+    FeatureConstraintRedundancy("Feature-clause-redundancy", List.of(AnalysisCategory.All, AnalysisCategory.Default)),
+    FeatureDense("Feature-dense", List.of(AnalysisCategory.All, AnalysisCategory.Default)),
+    FeatureCore("Feature-core", List.of(AnalysisCategory.All, AnalysisCategory.Default)),
+    FeatureValid("Feature-valid", List.of(AnalysisCategory.All, AnalysisCategory.Default)),
+    FeatureCyclo("Feature-cyclo", List.of(AnalysisCategory.All, AnalysisCategory.Default)),
+    SatzillaBASE("Satzilla-BASE", List.of(AnalysisCategory.All, AnalysisCategory.SATzilla)),
+    SatzillaSP("Satzilla-SP", List.of(AnalysisCategory.All, AnalysisCategory.SATzilla)),
+    SatzillaDIA("Satzilla-DIA", List.of(AnalysisCategory.All, AnalysisCategory.SATzilla)),
+    SatzillaCL("Satzilla-CL", List.of(AnalysisCategory.All, AnalysisCategory.SATzilla)),
+    SatzillaUNIT("Satzilla-UNIT", List.of(AnalysisCategory.All, AnalysisCategory.SATzilla)),
+    SatzillaLS("Satzilla-LS", List.of(AnalysisCategory.All, AnalysisCategory.SATzilla)),
+    SatzillaLOBJOIS("Satzilla-LOBJOIS", List.of(AnalysisCategory.All, AnalysisCategory.SATzilla)),
+    SatzillaLP("Satzilla-LP", List.of(AnalysisCategory.All, AnalysisCategory.SATzilla));
 
     private final String name;
+    private List<AnalysisCategory> categories;
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    AnalysisStepsEnum(String name){
+    public List<AnalysisCategory> getCategories() {
+        return categories;
+    }
+
+    AnalysisStepsEnum(String name, List<AnalysisCategory> categories) {
         this.name = name;
+        this.categories = categories;
     }
 
     public static AnalysisStepsEnum getIgnoreCase(String string) throws NoSuchElementException {
-        return Arrays.stream(AnalysisStepsEnum.values()).filter(e -> e.toString().equalsIgnoreCase(string)).findFirst().orElse(null);
+        return Arrays.stream(AnalysisStepsEnum.values()).filter(e -> e.toString().equalsIgnoreCase(string)).findFirst()
+                .orElse(null);
     }
 
     public FeatureStepHandler getFeatureStepHandler(int timeout) {
