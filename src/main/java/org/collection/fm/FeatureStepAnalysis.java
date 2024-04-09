@@ -1,11 +1,6 @@
 package org.collection.fm;
 
-import org.checkerframework.checker.units.qual.A;
-import org.collection.fm.analyses.*;
 import org.collection.fm.handler.AnalysisStepHandler;
-import org.collection.fm.handler.FeatureStepHandler;
-import org.collection.fm.handler.SatzillaHandler;
-import org.collection.fm.util.AnalysisCacher;
 import org.collection.fm.util.AnalysisCategory;
 import org.collection.fm.util.AnalysisStepsEnum;
 import org.collection.fm.util.FMUtils;
@@ -13,7 +8,6 @@ import org.collection.fm.util.FileUtils;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 
