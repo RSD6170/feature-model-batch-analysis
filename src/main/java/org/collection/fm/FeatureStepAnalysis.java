@@ -1,7 +1,6 @@
 package org.collection.fm;
 
 import org.collection.fm.handler.AnalysisStepHandler;
-import org.collection.fm.util.AnalysisCategory;
 import org.collection.fm.util.AnalysisStepsEnum;
 import org.collection.fm.util.FMUtils;
 import org.collection.fm.util.FileUtils;
@@ -35,27 +34,15 @@ public class FeatureStepAnalysis {
             System.exit(-1);
         }
 
-        EnumMap<AnalysisStepsEnum, Integer> enumMap = getEnumMapByCategory(args.length > 1 ? args[1] : "All", 60);
+        EnumMap<AnalysisStepsEnum, Integer> enumMap = AnalysisStepsEnum.getEnumMapByCategory(args.length > 1 ? args[1] : "All", 60);
 
         analysis.initializeHandler(enumMap);
 
         List<File> files = FileUtils.getFileList(args[0]);
 
-        analysis.handleFiles(files, args.length < 3 ? "result.csv" : args[1], args.length < 3 ? "time.csv" : args[2], args.length < 3 ? "runstatus.csv" : args[3]);
+        analysis.handleFiles(files, args.length < 3 ? "result.csv" : args[2], args.length < 3 ? "time.csv" : args[3], args.length < 3 ? "runstatus.csv" : args[4]);
     }
 
-    private static EnumMap<AnalysisStepsEnum, Integer> getEnumMapByCategory(String category, int timeout) {
-        EnumMap<AnalysisStepsEnum, Integer> enumMap = new EnumMap<>(AnalysisStepsEnum.class);
-        for (AnalysisStepsEnum analysis : AnalysisStepsEnum.values()) {
-            for (AnalysisCategory categoryIt : analysis.getCategories()) {
-                if (categoryIt.name().equals(category)) {
-                    enumMap.put(analysis, timeout);
-                    break;
-                }
-            }
-        }
 
-        return enumMap;
-    }
 
 }

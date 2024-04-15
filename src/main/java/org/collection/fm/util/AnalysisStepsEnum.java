@@ -5,6 +5,7 @@ import org.collection.fm.handler.FeatureStepHandler;
 import org.collection.fm.handler.SatzillaHandler;
 
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -127,6 +128,20 @@ public enum AnalysisStepsEnum {
             case SatzillaLOBJOIS -> new SatzillaHandler(timeout, SatzillaHandler.SatzillaTypes.LOBJOIS);
             case SatzillaLP -> new SatzillaHandler(timeout, SatzillaHandler.SatzillaTypes.LP);
         };
+    }
+
+    public static EnumMap<AnalysisStepsEnum, Integer> getEnumMapByCategory(String category, int timeout) {
+        EnumMap<AnalysisStepsEnum, Integer> enumMap = new EnumMap<>(AnalysisStepsEnum.class);
+        for (AnalysisStepsEnum analysis : AnalysisStepsEnum.values()) {
+            for (AnalysisCategory categoryIt : analysis.getCategories()) {
+                if (categoryIt.name().equals(category)) {
+                    enumMap.put(analysis, timeout);
+                    break;
+                }
+            }
+        }
+
+        return enumMap;
     }
 
 }
