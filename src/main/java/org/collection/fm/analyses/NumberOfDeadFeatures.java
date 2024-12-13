@@ -1,5 +1,7 @@
 package org.collection.fm.analyses;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.collection.fm.util.AnalysisCacher;
 import org.prop4j.Node;
 
@@ -9,6 +11,8 @@ import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import java.nio.file.Path;
 
 public class NumberOfDeadFeatures implements IFMAnalysis {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String LABEL = "Number_Dead";
     private final AnalysisCacher analysisCacher;
@@ -32,8 +36,7 @@ public class NumberOfDeadFeatures implements IFMAnalysis {
         try {
             return String.valueOf(analysisCacher.getDeadFeatureNumber(formula, timeout));
         } catch (Exception e) {
-            System.out.println("NumberOfDeadFeatures just crashed!");
-            e.printStackTrace();
+            LOGGER.warn("{} just crashed", LABEL, e);
             return "?";
         }
     }

@@ -14,7 +14,15 @@ repositories {
     }
 }
 
+var log4j="2.24.2"
+
 dependencies {
+    // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
+    implementation("org.apache.logging.log4j:log4j-api:$log4j")
+    // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
+    runtimeOnly("org.apache.logging.log4j:log4j-core:$log4j")
+    runtimeOnly("org.apache.logging.log4j:log4j-layout-template-json:$log4j")
+
     implementation 'org.apache.commons:commons-csv:1.10.0'
 
     implementation files("lib/antlr-3.4.jar")

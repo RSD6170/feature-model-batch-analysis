@@ -2,6 +2,8 @@ package org.collection.fm.analyses;
 
 import java.nio.file.Path;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.collection.fm.util.AnalysisCacher;
 import org.prop4j.Node;
 
@@ -16,6 +18,8 @@ import de.ovgu.featureide.fm.core.job.LongRunningWrapper;
 import de.ovgu.featureide.fm.core.job.monitor.NullMonitor;
 
 public class NumberOfRedundantConstraints implements IFMAnalysis {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String LABEL = NumberOfRedundantConstraints.class.getSimpleName();
 
@@ -42,8 +46,7 @@ public class NumberOfRedundantConstraints implements IFMAnalysis {
             FeatureModelAnalyzer analyzer = analysisCacher.getAnalyzer(formula);
             return String.valueOf(analyzer.getRedundantConstraints(new NullMonitor<>()).size());
         } catch (Exception e) {
-            System.out.println(LABEL + " just crashed!");
-            e.printStackTrace();
+            LOGGER.warn("{} just crashed", LABEL, e);
             return "?";
         }
     }

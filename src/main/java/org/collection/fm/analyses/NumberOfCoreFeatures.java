@@ -1,5 +1,7 @@
 package org.collection.fm.analyses;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.collection.fm.util.AnalysisCacher;
 import org.prop4j.Node;
 
@@ -9,6 +11,8 @@ import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import java.nio.file.Path;
 
 public class NumberOfCoreFeatures implements IFMAnalysis  {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String LABEL = "Number_CORE";
     private final AnalysisCacher analysisCacher;
@@ -32,8 +36,7 @@ public class NumberOfCoreFeatures implements IFMAnalysis  {
         try {
             return String.valueOf(analysisCacher.getCoreFeatureNumber(formula, timeout));
         } catch (Exception e) {
-            System.out.println("NumberOfCoreFeatures just crashed!");
-            e.printStackTrace();
+            LOGGER.warn("{} just crashed", LABEL, e);
             return "?";
         }
     }

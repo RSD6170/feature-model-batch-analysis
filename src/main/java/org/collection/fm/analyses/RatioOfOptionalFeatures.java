@@ -1,5 +1,7 @@
 package org.collection.fm.analyses;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.collection.fm.util.AnalysisCacher;
 import org.prop4j.Node;
 
@@ -9,6 +11,8 @@ import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import java.nio.file.Path;
 
 public class RatioOfOptionalFeatures implements IFMAnalysis{
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String LABEL = "RatioOptionalFeatures";
     private final AnalysisCacher analysisCacher;
@@ -33,8 +37,7 @@ public class RatioOfOptionalFeatures implements IFMAnalysis{
             int numberOfFeatures = featureModel.getNumberOfFeatures();
             return Double.toString((double)(numberOfFeatures - analysisCacher.getCoreFeatureNumber(formula, timeout) - analysisCacher.getDeadFeatureNumber(formula, timeout)) / numberOfFeatures);
         } catch (Exception e) {
-            System.out.println("RatioOfOptionalFeatures just crashed!");
-            e.printStackTrace();
+            LOGGER.warn("{} just crashed", LABEL, e);
             return "?";
         }
     }

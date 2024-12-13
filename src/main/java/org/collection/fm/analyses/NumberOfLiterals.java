@@ -1,14 +1,19 @@
 package org.collection.fm.analyses;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.prop4j.Node;
 import org.prop4j.Or;
 
 import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 
 public class NumberOfLiterals implements IFMAnalysis {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String LABEL = "NumberOfLiterals";
 
@@ -30,7 +35,7 @@ public class NumberOfLiterals implements IFMAnalysis {
         for (Node clause : cnf.getChildren()) {
             if (Thread.currentThread().isInterrupted()) break;
             if (!(clause instanceof Or)) {
-                System.out.println("Not CNF");
+                LOGGER.warn("Not CNF in {}", LABEL);
                 return null;
             }
             numberOfLiterals += clause.getLiterals().size();

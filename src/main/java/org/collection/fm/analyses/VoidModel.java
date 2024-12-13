@@ -1,5 +1,7 @@
 package org.collection.fm.analyses;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.collection.fm.util.FMUtils;
 import org.prop4j.Node;
 
@@ -9,6 +11,8 @@ import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import java.nio.file.Path;
 
 public class VoidModel implements IFMAnalysis {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String LABEL = "Void";
     @Override
@@ -26,8 +30,7 @@ public class VoidModel implements IFMAnalysis {
         try {
             return FMUtils.isVoid(formula, timeout) ? "1" : "0";
         } catch (Exception e) {
-            System.out.println("VoidModel just crashed!");
-            e.printStackTrace();
+            LOGGER.warn("{} just crashed", LABEL, e);
             return "?";
         }
     }
