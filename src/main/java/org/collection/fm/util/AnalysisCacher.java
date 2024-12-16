@@ -28,7 +28,7 @@ public class AnalysisCacher {
     }
 
     public FeatureModelAnalyzer getAnalyzer(FeatureModelFormula formula) {
-        if (!formula.equals(this.formula)) {
+        if (!formula.equals(this.formula) || Objects.isNull(featureIDEAnalyzer)) {
             this.formula = formula;
             featureIDEAnalyzer = new FeatureModelAnalyzer(formula);
         }
@@ -39,7 +39,7 @@ public class AnalysisCacher {
     private void generateResults(FeatureModelFormula formula, int timeout) throws Exception {
         if (!formula.equals(this.formula) || Objects.isNull(coreFeatures) || Objects.isNull(deadFeatures)){
             this.formula = formula;
-            featureIDEAnalyzer = new FeatureModelAnalyzer(formula);
+            featureIDEAnalyzer = getAnalyzer(formula);
             CoreDeadAnalysis coreDeadAnalysis = new CoreDeadAnalysis(formula.getCNF());
             coreDeadAnalysis.setTimeout(1000*timeout);
             LiteralSet result = coreDeadAnalysis.execute(new NullMonitor<>());
