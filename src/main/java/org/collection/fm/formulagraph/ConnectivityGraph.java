@@ -115,6 +115,7 @@ public class ConnectivityGraph {
                     pathLog.add(dest);
                     String next = current;
                     while (next != null && !pathLog.contains(next)) {
+                        if (Thread.currentThread().isInterrupted()) return -1;
                         pathLog.add(next);
                         next = parentMapping.get(next);
                     }
