@@ -42,6 +42,7 @@ public class ConnectivityGraph {
         }
         for (int i = 0; i < set.getChildren().length - 1; i++) {
             for (int j = i+1; j < set.getChildren().length; j++) {
+                if (Thread.currentThread().isInterrupted()) return;
                 handlePair((String) set.getChildren()[i].getLiterals().get(0).var, (String) set.getChildren()[j].getLiterals().get(0).var);
             }
         }
@@ -78,7 +79,7 @@ public class ConnectivityGraph {
             Vertex current = getVertex(stack.pop());
             current.setVisited(true);
             for (String dest : current.getAdjacencyList()) {
-                if (Thread.currentThread().isInterrupted()) break;
+                if (Thread.currentThread().isInterrupted()) return -1;
                 Vertex destV = getVertex(dest);
                 if (stack.contains(dest) && !destV.isVisited()) { // cycle found
                     cycleCounter++;
@@ -94,6 +95,7 @@ public class ConnectivityGraph {
     // i.e. the vertices in each cycle are not a subset of another one
     public int getNumberOfIndependentCycles() {
         Deque<String> stack = new ArrayDeque<>();
+        if (Thread.currentThread().isInterrupted()) return -1;
         String start =  vertices.values().iterator().next().getVariable();
         List<List<String>> cycleLog = new ArrayList<>();
         stack.push(start);
