@@ -3,9 +3,9 @@ package org.collection.fm.analyses;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.function.BiFunction;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.collection.fm.util.BinaryRunner;
 import org.collection.fm.util.BinaryRunner.*;
 import org.prop4j.Node;
@@ -18,17 +18,10 @@ import de.ovgu.featureide.fm.core.base.IFeatureModel;
  */
 public class NumberOfValidConfigurationsLog implements IFMAnalysis {
 
+	private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String LABEL = "NumberOfValidConfigurationsLog";
-
-
-
-
-
-    private static final String UNSAT_FLAG = "s 0";
-
-
-    private static final String BINARY_PATH = "solver" + File.separator + "d4";
+	private static final String BINARY_PATH = "solver" + File.separator + "sharpSAT";
 
     @Override
     public String getLabel() {
@@ -47,42 +40,55 @@ public class NumberOfValidConfigurationsLog implements IFMAnalysis {
 			return "?";
 		}
 		if (result.status == Status.SOLVED) {
-			return String.valueOf(parseResult(result.stdout).length());
+			return String.valueOf(parseResult(result.stdout));
 		}
 		return "?";
     }
 	
 
     
-    public BinaryResult executeSolver(long timeout, FeatureModelFormula formula, Path solverRelativePath) throws InterruptedException {
-		return BinaryRunner.runSolverWithDir(this.buildCommand(), timeout, formula, solverRelativePath);
+    public BinaryResult executeSolver(int timeout, FeatureModelFormula formula, Path solverRelativePath) throws InterruptedException {
+		int memoryMB = 4000;
+		try {
+			String slurmMem = System.getenv("SLURM_MEM_PER_NODE");
+			if (slurmMem != null) memoryMB = Integer.parseInt(slurmMem);
+		} catch (Exception e) {
+			LOGGER.warn("FMBA Valid Count: Error in SLURM-specific memory reading", e);
+		}
+		memoryMB = memoryMB / 2 - 500;
+		LOGGER.info("Running Model Counter with {} MB memory", memoryMB);
+		return BinaryRunner.runSolverWithDir(this.buildCommand(timeout, memoryMB), timeout, formula, solverRelativePath);
 	}
     
-    private BiFunction<Path, Path, String[]> buildCommand() {
-		return ((solverRelativePath, dimacsPath) -> new String[]{solverRelativePath.resolve(BINARY_PATH).toString(),"-i",dimacsPath.toString(),"-m", "counting"});
+    private BiFunction<Path, Path, String[]> buildCommand(int timeout, int memoryMB) {
+		return ((solverRelativePath, dimacsPath) -> new String[]{
+				solverRelativePath.resolve(BINARY_PATH).toString(),
+				"-decot",
+				String.valueOf(timeout / 30),
+				"-decow",
+				"100",
+				"-tmpdir",
+				System.getProperty("java.io.tmpdir"),
+				"-cs",
+				String.valueOf(memoryMB),
+				dimacsPath.toString()
+		});
     }
     
 
     public String parseResult(String output) {
-		if (isUNSAT(output)) {
-			return "0";
-		}
-		final Pattern pattern = Pattern.compile("^s \\d*", Pattern.MULTILINE);
-		final Matcher matcher = pattern.matcher(output);
-		String result = "";
-		if (matcher.find()) {
-			result = matcher.group();
-		} else {
+		try {
+			if (output.contains("s SATISFIABLE")) {
+				return output.lines().filter(e -> e.startsWith("c s log10-estimate")).map(e -> e.split(" ", 4)[3]).findAny().orElseThrow();
+			} else if (output.contains("s UNSATISFIABLE")) {
+				return "-inf";
+			} else throw new IllegalStateException("Unsupported output: " + output);
+		} catch (Exception e) {
+			LOGGER.warn("Unknown output of model counter: {}", output, e);
 			return "?";
 		}
-		final String[] split = result.split(" ");
-		return split[split.length - 1];
     }
-    
 
-    private boolean isUNSAT(String output) {
-		return output.contains(UNSAT_FLAG);
-	}
 
 	@Override
 	public String getResult(Node node) {
