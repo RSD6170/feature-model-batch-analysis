@@ -63,7 +63,7 @@ public class ConnectivityGraph {
         return computer.getCycleBasis().getCycles().size();
     }
 
-    public static long getNumberOfCycles(FeatureModelFormula formula) {
+    public static int getNumberOfCycles(FeatureModelFormula formula) {
         Graph<String, DefaultEdge> graph = initializeGraph(formula, true);
         TiernanSimpleCycles<String, DefaultEdge> computer = new TiernanSimpleCycles<>(graph);
         return computer.findSimpleCycles().size();
