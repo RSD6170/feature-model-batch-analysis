@@ -76,8 +76,8 @@ public class ConnectivityGraph {
         List<BitSet> fundamentalCycles = generateVectorRepresentation(cycleBasis.getCycles());
 
         //1
-        Set<BitSet> S = new HashSet<>();
-        S.add(fundamentalCycles.getFirst());
+        long cycleCountS = 0;
+        cycleCountS++;
 
         Set<BitSet> Q = new HashSet<>();
         Q.add(fundamentalCycles.getFirst());
@@ -106,8 +106,8 @@ public class ConnectivityGraph {
             }
 
             //4
-            S.addAll(R);
-            S.add(currentCycle);
+            cycleCountS += R.size();
+            cycleCountS++;
 
             //5
             Q.addAll(R);
@@ -117,7 +117,7 @@ public class ConnectivityGraph {
             RStar.clear();
         }
 
-        return S.size();
+        return cycleCountS;
     }
 
     private boolean checkSubset(BitSet subset, BitSet set) {
