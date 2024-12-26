@@ -20,6 +20,7 @@ public class ConnectivityGraph {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static Graph<String, DefaultEdge> initializeGraph(FeatureModelFormula formula, boolean isDirected) {
+        LOGGER.debug("Begin graph initialization in FMBA Connectivity Graph");
         Graph<String, DefaultEdge> graph;
         if (isDirected) graph = new SimpleDirectedGraph<>(DefaultEdge.class);
         else graph = new SimpleGraph<>(DefaultEdge.class);
@@ -28,6 +29,7 @@ public class ConnectivityGraph {
             if (Thread.currentThread().isInterrupted()) break;
             handleClause(graph, clause, isDirected);
         }
+        LOGGER.info("Finished graph initialization in FMBA Connectivity Graph with {} nodes and {} edges", () -> graph.vertexSet().size(), () -> graph.edgeSet().size());
         return graph;
     }
 
