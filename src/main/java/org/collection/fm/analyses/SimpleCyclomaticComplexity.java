@@ -11,11 +11,6 @@ import java.nio.file.Path;
 public class SimpleCyclomaticComplexity implements IFMAnalysis {
 
     private static final String LABEL = "SimpleCyclomaticComplexity";
-    private final ConnectivityGraph connectivityGraph;
-
-    public SimpleCyclomaticComplexity(ConnectivityGraph connectivityGraph) {
-        this.connectivityGraph = connectivityGraph;
-    }
 
     @Override
     public String getLabel() {
@@ -29,7 +24,7 @@ public class SimpleCyclomaticComplexity implements IFMAnalysis {
 
     @Override
     public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) {
-        return Long.toString(connectivityGraph.getNumberOfCycles(formula));
+        return Integer.toString(ConnectivityGraph.getNumberOfCycles(formula));
     }
 
     @Override

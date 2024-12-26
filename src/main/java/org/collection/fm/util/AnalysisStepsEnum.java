@@ -109,10 +109,9 @@ public enum AnalysisStepsEnum {
             }
             case FeatureCyclo -> {
                 FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
-                ConnectivityGraph connectivityGraph = new ConnectivityGraph();
-                featureStepHandler.addAnalysis(new ConnectivityDensity(connectivityGraph));
-                featureStepHandler.addAnalysis(new SimpleCyclomaticComplexity(connectivityGraph));
-                featureStepHandler.addAnalysis(new IndependentCyclomaticComplexity(connectivityGraph));
+                featureStepHandler.addAnalysis(new ConnectivityDensity());
+                featureStepHandler.addAnalysis(new SimpleCyclomaticComplexity());
+                featureStepHandler.addAnalysis(new IndependentCyclomaticComplexity());
                 yield featureStepHandler;
 
             }
