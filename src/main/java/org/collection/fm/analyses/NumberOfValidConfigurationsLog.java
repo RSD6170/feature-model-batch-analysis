@@ -21,7 +21,7 @@ public class NumberOfValidConfigurationsLog implements IFMAnalysis {
 	private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String LABEL = "NumberOfValidConfigurationsLog";
-	private static final String BINARY_PATH = "solver" + File.separator + "sharpSAT";
+	private static final String BINARY_PATH = "./sharpSAT";
 
     @Override
     public String getLabel() {
@@ -57,12 +57,12 @@ public class NumberOfValidConfigurationsLog implements IFMAnalysis {
 		}
 		memoryMB = memoryMB / 2 - 500;
 		LOGGER.info("Running Model Counter with {} MB memory", memoryMB);
-		return BinaryRunner.runSolverWithDir(this.buildCommand(timeout, memoryMB), timeout, formula, solverRelativePath);
+		return BinaryRunner.runSolverWithDir(this.buildCommand(timeout, memoryMB), timeout, formula, solverRelativePath, solverRelativePath.resolve("solver").toFile());
 	}
     
     private BiFunction<Path, Path, String[]> buildCommand(int timeout, int memoryMB) {
 		return ((solverRelativePath, dimacsPath) -> new String[]{
-				solverRelativePath.resolve(BINARY_PATH).toString(),
+				BINARY_PATH,
 				"-decot",
 				String.valueOf(timeout / 30),
 				"-decow",

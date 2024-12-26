@@ -42,10 +42,10 @@ public class BinaryRunner {
 	}
 
 
-	public static BinaryResult runBinaryStatic(String[] commands, long timeout) throws InterruptedException {
+	public static BinaryResult runBinaryStatic(String[] commands, long timeout, File workingDir) throws InterruptedException {
 		Process ps = null;
         try {
-            ps = new ProcessBuilder(commands).redirectErrorStream(true).start();
+            ps = new ProcessBuilder(commands).redirectErrorStream(true).directory(workingDir).start();
             long pid = ps.pid();
             if (!ps.waitFor(timeout, TimeUnit.SECONDS)) {
                 killProcesses(ps.toHandle());
@@ -76,10 +76,14 @@ public class BinaryRunner {
 	}
 
 	public static BinaryResult runSolverWithDir(BiFunction<Path, Path, String[]> commands, long timeout, FeatureModelFormula formula, Path solverRelativePath) throws InterruptedException {
+		return runSolverWithDir(commands, timeout, formula, solverRelativePath, new File("."));
+	}
+
+	public static BinaryResult runSolverWithDir(BiFunction<Path, Path, String[]> commands, long timeout, FeatureModelFormula formula, Path solverRelativePath, File workingDir) throws InterruptedException {
 		Path dir = null;
 		try {
 			dir = createTemporaryDimacs(formula);
-			BinaryResult result = runBinaryStatic(commands.apply(solverRelativePath, dir.resolve(TEMPORARY_DIMACS_PATH)), timeout);
+			BinaryResult result = runBinaryStatic(commands.apply(solverRelativePath, dir.resolve(TEMPORARY_DIMACS_PATH)), timeout, workingDir);
 			cleanUpTemp(dir);
 			return result;
 		} catch (IOException e) {
