@@ -113,6 +113,8 @@ public class ConnectivityGraph {
             Q.addAll(R);
             Q.addAll(RStar);
             Q.add(currentCycle);
+            R.clear();
+            RStar.clear();
         }
 
         return S.size();
