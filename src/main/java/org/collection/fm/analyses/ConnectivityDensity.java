@@ -11,6 +11,11 @@ import java.nio.file.Path;
 public class ConnectivityDensity implements IFMAnalysis {
 
     private static final String LABEL = "ConnectivityDensity";
+    private final ConnectivityGraph connectivityGraph;
+
+    public ConnectivityDensity(ConnectivityGraph connectivityGraph) {
+        this.connectivityGraph = connectivityGraph;
+    }
 
     @Override
     public String getLabel() {
@@ -24,9 +29,7 @@ public class ConnectivityDensity implements IFMAnalysis {
 
     @Override
     public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) {
-        ConnectivityGraph graph = new ConnectivityGraph(formula);
-        int numberOfEdges = graph.getNumberOfEdges();
-        return Integer.toString(numberOfEdges);
+        return Long.toString(connectivityGraph.getNumberOfEdges(formula));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.collection.fm.util;
 
 import org.collection.fm.analyses.*;
+import org.collection.fm.formulagraph.ConnectivityGraph;
 import org.collection.fm.handler.FeatureStepHandler;
 import org.collection.fm.handler.SatzillaHandler;
 
@@ -17,7 +18,6 @@ public enum AnalysisStepsEnum {
     FeatureTree("Feature-tree", List.of(AnalysisCategory.All, AnalysisCategory.Default, AnalysisCategory.Simple)),
     FeatureClause("Feature-clause", List.of(AnalysisCategory.All, AnalysisCategory.Default, AnalysisCategory.CNF)),
     FeatureConstraintRedundancy("Feature-clause-redundancy", List.of(AnalysisCategory.All, AnalysisCategory.Default)),
-    FeatureDense("Feature-dense", List.of(AnalysisCategory.All, AnalysisCategory.Default)),
     FeatureCore("Feature-core", List.of(AnalysisCategory.All, AnalysisCategory.Default)),
     FeatureValid("Feature-valid", List.of(AnalysisCategory.All, AnalysisCategory.Default)),
     FeatureCyclo("Feature-cyclo", List.of(AnalysisCategory.All, AnalysisCategory.Default)),
@@ -92,11 +92,6 @@ public enum AnalysisStepsEnum {
                 featureStepHandler.addAnalysis(new ClauseDensity());
                 yield featureStepHandler;
             }
-            case FeatureDense -> {
-                FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
-                featureStepHandler.addAnalysis(new ConnectivityDensity());
-                yield featureStepHandler;
-            }
             case FeatureCore -> {
                 FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
                 featureStepHandler.addAnalysis(new VoidModel());
@@ -114,8 +109,10 @@ public enum AnalysisStepsEnum {
             }
             case FeatureCyclo -> {
                 FeatureStepHandler featureStepHandler = new FeatureStepHandler(timeout, this.getName());
-                featureStepHandler.addAnalysis(new SimpleCyclomaticComplexity());
-                featureStepHandler.addAnalysis(new IndependentCyclomaticComplexity());
+                ConnectivityGraph connectivityGraph = new ConnectivityGraph();
+                featureStepHandler.addAnalysis(new ConnectivityDensity(connectivityGraph));
+                featureStepHandler.addAnalysis(new SimpleCyclomaticComplexity(connectivityGraph));
+                featureStepHandler.addAnalysis(new IndependentCyclomaticComplexity(connectivityGraph));
                 yield featureStepHandler;
 
             }
