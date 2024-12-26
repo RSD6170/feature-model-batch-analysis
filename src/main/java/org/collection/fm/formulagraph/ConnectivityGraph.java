@@ -67,6 +67,41 @@ public class ConnectivityGraph {
         return graph.edgeSet().size();
     }
 
+
+    private boolean checkSubset(BitSet subset, BitSet set) {
+        if (subset.equals(set)) return false;
+        BitSet subCopy = (BitSet) subset.clone();
+        subCopy.xor(set);
+        subCopy.or(set);
+        return subCopy.equals(set);
+    }
+
+    private List<BitSet> generateVectorRepresentation(Set<List<DefaultEdge>> fundamentalCycles){
+        List<BitSet> list = new ArrayList<>();
+        for (List<DefaultEdge> fundamentalCycle : fundamentalCycles) {
+            BitSet bitSet = new BitSet(graph.edgeSet().size());
+            for (DefaultEdge edge : fundamentalCycle) {
+                bitSet.set(edgeIDMap.get(edge));
+            }
+            list.add(bitSet);
+        }
+        return list;
+    }
+
+
+    // computes the number of independent cycles
+    // i.e. the vertices in each cycle are not a subset of another one
+    public long getNumberOfIndependentCycles(FeatureModelFormula formula) {
+        initializeGraph(formula);
+        if (cycleBasis == null) computeCycleBasis();
+        return cycleBasis.getCycles().size();
+    }
+
+    private void computeCycleBasis(){
+        StackBFSFundamentalCycleBasis<String, DefaultEdge> computer = new StackBFSFundamentalCycleBasis<>(graph);
+        cycleBasis = computer.getCycleBasis();
+    }
+
     // performs a dfs to compute the number of cycles
     // Algorithm from https://dl.acm.org/doi/epdf/10.1145/321541.321545 or http://dspace.mit.edu/bitstream/handle/1721.1/68106/FTL_R_1982_07.pdf, page 14 (16 in PDF)
     public long getNumberOfCycles(FeatureModelFormula formula) {
@@ -118,40 +153,6 @@ public class ConnectivityGraph {
         }
 
         return cycleCountS;
-    }
-
-    private boolean checkSubset(BitSet subset, BitSet set) {
-        if (subset.equals(set)) return false;
-        BitSet subCopy = (BitSet) subset.clone();
-        subCopy.xor(set);
-        subCopy.or(set);
-        return subCopy.equals(set);
-    }
-
-    private List<BitSet> generateVectorRepresentation(Set<List<DefaultEdge>> fundamentalCycles){
-        List<BitSet> list = new ArrayList<>();
-        for (List<DefaultEdge> fundamentalCycle : fundamentalCycles) {
-            BitSet bitSet = new BitSet(graph.edgeSet().size());
-            for (DefaultEdge edge : fundamentalCycle) {
-                bitSet.set(edgeIDMap.get(edge));
-            }
-            list.add(bitSet);
-        }
-        return list;
-    }
-
-
-    // computes the number of independent cycles
-    // i.e. the vertices in each cycle are not a subset of another one
-    public long getNumberOfIndependentCycles(FeatureModelFormula formula) {
-        initializeGraph(formula);
-        if (cycleBasis == null) computeCycleBasis();
-        return cycleBasis.getCycles().size();
-    }
-
-    private void computeCycleBasis(){
-        StackBFSFundamentalCycleBasis<String, DefaultEdge> computer = new StackBFSFundamentalCycleBasis<>(graph);
-        cycleBasis = computer.getCycleBasis();
     }
 
 }
