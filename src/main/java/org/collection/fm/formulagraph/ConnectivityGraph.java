@@ -4,9 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
-import org.jgrapht.alg.cycle.StackBFSFundamentalCycleBasis;
-import org.jgrapht.alg.cycle.TiernanSimpleCycles;
-import org.jgrapht.graph.AsUndirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleDirectedGraph;
 import org.jgrapht.graph.SimpleGraph;
@@ -15,7 +12,13 @@ import org.prop4j.Or;
 
 import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
 
+import java.util.Objects;
+
 public class ConnectivityGraph {
+
+    private ConnectivityGraph(){
+        //hide
+    }
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -46,6 +49,7 @@ public class ConnectivityGraph {
                 if (Thread.currentThread().isInterrupted()) return;
                 var v1 = (String) set.getChildren()[i].getLiterals().getFirst().var;
                 var v2 = (String) set.getChildren()[j].getLiterals().getFirst().var;
+                if (Objects.equals(v1, v2)) continue; //no self-loops allowed
                 Graphs.addEdgeWithVertices(graph, v1, v2);
                 if (isDirected) Graphs.addEdgeWithVertices(graph, v2, v1);
             }
@@ -59,16 +63,16 @@ public class ConnectivityGraph {
 
     // computes the number of independent cycles
     // i.e. the vertices in each cycle are not a subset of another one
-    public static int getNumberOfIndependentCycles(FeatureModelFormula formula) {
+    public static long getNumberOfIndependentCycles(FeatureModelFormula formula) {
         Graph<String, DefaultEdge> graph = initializeGraph(formula, false);
-        StackBFSFundamentalCycleBasis<String, DefaultEdge> computer = new StackBFSFundamentalCycleBasis<>(graph);
-        return computer.getCycleBasis().getCycles().size();
+        InterruptableStackBFSFundamentalCycleBasis<String, DefaultEdge> computer = new InterruptableStackBFSFundamentalCycleBasis<>(graph);
+        return computer.getCycleBasisCount();
     }
 
-    public static int getNumberOfCycles(FeatureModelFormula formula) {
+    public static long getNumberOfCycles(FeatureModelFormula formula) {
         Graph<String, DefaultEdge> graph = initializeGraph(formula, true);
-        TiernanSimpleCycles<String, DefaultEdge> computer = new TiernanSimpleCycles<>(graph);
-        return (computer.findSimpleCycles().size() - graph.edgeSet().size()) / 2; // taken from https://www.tandfonline.com/doi/abs/10.1080/18756891.2013.857893
+        InterruptableTiernanSimpleCycles<String, DefaultEdge> computer = new InterruptableTiernanSimpleCycles<>(graph);
+        return (computer.countSimpleCycles() - graph.edgeSet().size()) / 2; // taken from https://www.tandfonline.com/doi/abs/10.1080/18756891.2013.857893
     }
 
 }

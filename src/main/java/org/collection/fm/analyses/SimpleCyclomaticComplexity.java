@@ -24,7 +24,7 @@ public class SimpleCyclomaticComplexity implements IFMAnalysis {
 
     @Override
     public String getResult(IFeatureModel featureModel, FeatureModelFormula formula, int timeout, Path solverRelativePath) {
-        return Integer.toString(ConnectivityGraph.getNumberOfCycles(formula));
+        return Long.toString(ConnectivityGraph.getNumberOfCycles(formula));
     }
 
     @Override
