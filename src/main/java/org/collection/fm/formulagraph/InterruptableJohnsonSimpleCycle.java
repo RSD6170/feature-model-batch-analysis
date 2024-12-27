@@ -1,13 +1,18 @@
 package org.collection.fm.formulagraph;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphTests;
 import org.jgrapht.alg.util.Pair;
+import org.jgrapht.graph.IntrusiveEdgeException;
 import org.jgrapht.graph.builder.GraphTypeBuilder;
 
 import java.util.*;
 
 public class InterruptableJohnsonSimpleCycle<V, E>  {
+
+    protected static final Logger LOGGER = LogManager.getLogger();
 
     private final Graph<V, E> graph;
     private long count = 0;
@@ -95,7 +100,11 @@ public class InterruptableJohnsonSimpleCycle<V, E>  {
 
                     E edge = this.graph.getEdge(v, w);
                     if (edge != null) {
-                        resultGraph.addEdge(v, w, edge);
+                        try {
+                            resultGraph.addEdge(v, w);
+                        } catch (IntrusiveEdgeException e){
+                            LOGGER.warn("Intrusive edge detected", e);
+                        }
                     }
                 }
             }
