@@ -6,7 +6,6 @@ import org.jgrapht.alg.util.Pair;
 import org.jgrapht.graph.builder.GraphTypeBuilder;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public class InterruptableJohnsonSimpleCycle<V, E>  {
 
@@ -31,7 +30,7 @@ public class InterruptableJohnsonSimpleCycle<V, E>  {
         }
     }
 
-    public long countSimpleCycles() {
+    public long countSimpleCycles() throws InterruptedException {
         if (this.graph == null) {
             throw new IllegalArgumentException("Null graph.");
         } else {
@@ -49,6 +48,7 @@ public class InterruptableJohnsonSimpleCycle<V, E>  {
                 V startV = this.toV(startIndex);
 
                 for(E e : scg.outgoingEdgesOf(startV)) {
+                    if (Thread.interrupted()) throw new InterruptedException();
                     V v = this.graph.getEdgeTarget(e);
                     this.blocked.remove(v);
                     this.getBSet(v).clear();
@@ -62,7 +62,7 @@ public class InterruptableJohnsonSimpleCycle<V, E>  {
         return count;
     }
 
-    private Pair<Graph<V, E>, Integer> findMinSCSG(int startIndex) {
+    private Pair<Graph<V, E>, Integer> findMinSCSG(int startIndex) throws InterruptedException {
         this.initMinSCGState();
         List<Set<V>> foundSCCs = this.findSCCS(startIndex);
         int minIndexFound = Integer.MAX_VALUE;
@@ -70,6 +70,8 @@ public class InterruptableJohnsonSimpleCycle<V, E>  {
 
         for(Set<V> scc : foundSCCs) {
             for(V v : scc) {
+                if (Thread.interrupted()) throw new InterruptedException();
+
                 int t = this.toI(v);
                 if (t < minIndexFound) {
                     minIndexFound = t;
@@ -89,6 +91,8 @@ public class InterruptableJohnsonSimpleCycle<V, E>  {
 
             for(V v : minSCC) {
                 for(V w : minSCC) {
+                    if (Thread.interrupted()) throw new InterruptedException();
+
                     E edge = this.graph.getEdge(v, w);
                     if (edge != null) {
                         resultGraph.addEdge(v, w, edge);
@@ -102,8 +106,10 @@ public class InterruptableJohnsonSimpleCycle<V, E>  {
         }
     }
 
-    private List<Set<V>> findSCCS(int startIndex) {
+    private List<Set<V>> findSCCS(int startIndex) throws InterruptedException {
         for(V v : this.graph.vertexSet()) {
+            if (Thread.interrupted()) throw new InterruptedException();
+
             int vI = this.toI(v);
             if (vI >= startIndex && !this.vIndex.containsKey(v)) {
                 this.getSCCs(startIndex, vI);
@@ -115,7 +121,7 @@ public class InterruptableJohnsonSimpleCycle<V, E>  {
         return result;
     }
 
-    private void getSCCs(int startIndex, int vertexIndex) {
+    private void getSCCs(int startIndex, int vertexIndex) throws InterruptedException {
         V vertex = this.toV(vertexIndex);
         this.vIndex.put(vertex, this.index);
         this.vLowlink.put(vertex, this.index);
@@ -124,6 +130,8 @@ public class InterruptableJohnsonSimpleCycle<V, E>  {
         this.pathSet.add(vertex);
 
         for(E e : this.graph.outgoingEdgesOf(vertex)) {
+            if (Thread.interrupted()) throw new InterruptedException();
+
             V successor = this.graph.getEdgeTarget(e);
             int successorIndex = this.toI(successor);
             if (successorIndex >= startIndex) {
@@ -141,6 +149,8 @@ public class InterruptableJohnsonSimpleCycle<V, E>  {
 
             V temp;
             do {
+                if (Thread.interrupted()) throw new InterruptedException();
+
                 temp = this.path.pop();
                 this.pathSet.remove(temp);
                 result.add(temp);
@@ -158,13 +168,15 @@ public class InterruptableJohnsonSimpleCycle<V, E>  {
 
     }
 
-    private boolean findCyclesInSCG(int startIndex, int vertexIndex, Graph<V, E> scg) {
+    private boolean findCyclesInSCG(int startIndex, int vertexIndex, Graph<V, E> scg) throws InterruptedException {
         boolean foundCycle = false;
         V vertex = this.toV(vertexIndex);
         this.stack.push(vertex);
         this.blocked.add(vertex);
 
         for(E e : scg.outgoingEdgesOf(vertex)) {
+            if (Thread.interrupted()) throw new InterruptedException();
+
             V successor = scg.getEdgeTarget(e);
             int successorIndex = this.toI(successor);
             if (successorIndex == startIndex) {
@@ -180,6 +192,8 @@ public class InterruptableJohnsonSimpleCycle<V, E>  {
             this.unblock(vertex);
         } else {
             for(E ew : scg.outgoingEdgesOf(vertex)) {
+                if (Thread.interrupted()) throw new InterruptedException();
+
                 V w = scg.getEdgeTarget(ew);
                 Set<V> bSet = this.getBSet(w);
                 bSet.add(vertex);
@@ -190,11 +204,13 @@ public class InterruptableJohnsonSimpleCycle<V, E>  {
         return foundCycle;
     }
 
-    private void unblock(V vertex) {
+    private void unblock(V vertex) throws InterruptedException {
         this.blocked.remove(vertex);
         Set<V> bSet = this.getBSet(vertex);
 
         while(!bSet.isEmpty()) {
+            if (Thread.interrupted()) throw new InterruptedException();
+
             V w = bSet.iterator().next();
             bSet.remove(w);
             if (this.blocked.contains(w)) {

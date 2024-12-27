@@ -71,8 +71,14 @@ public class ConnectivityGraph {
 
     public static long getNumberOfCycles(FeatureModelFormula formula) {
         Graph<String, DefaultEdge> graph = initializeGraph(formula, true);
-        InterruptableTiernanSimpleCycles<String, DefaultEdge> computer = new InterruptableTiernanSimpleCycles<>(graph);
-        return (computer.countSimpleCycles() - graph.edgeSet().size()) / 2; // taken from https://www.tandfonline.com/doi/abs/10.1080/18756891.2013.857893
+        InterruptableJohnsonSimpleCycle<String, DefaultEdge> computer = new InterruptableJohnsonSimpleCycle<>(graph);
+        try {
+            return (computer.countSimpleCycles() - graph.edgeSet().size()) / 2; // taken from https://www.tandfonline.com/doi/abs/10.1080/18756891.2013.857893
+        } catch (InterruptedException e) {
+            LOGGER.debug("Interrupted numberOfCycles", e);
+            Thread.currentThread().interrupt();
+            return -1;
+        }
     }
 
 }
